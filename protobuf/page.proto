@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message CollectionInfo {
+	repeated string pages = 1; // list of all page ids
+	repeated string groups = 2; // list of all group ids
+}
+
+message Page {
+  string article = 1;
+  repeated string groups = 2; // ids of groups this belongs to
+}
+
+message Group {
+  string page_id = 1;
+  repeated string members = 2; // ids of member pages
+}

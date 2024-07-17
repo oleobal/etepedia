@@ -1,0 +1,17 @@
+{
+  "name": "etepedia",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "esrun": "^3.2.26",
+    "etebase": "^0.43.1",
+    "ts-proto": "^1.181.1",
+    "typescript": "^5.5.3"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "esbuild src/app.ts --bundle --sourcemap --format=esm --outfile=html/js/bundle.js --servedir=html --watch",
+    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src ./protobuf/*"
+  }
+}
