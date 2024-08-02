@@ -1,4 +1,4 @@
 .venv
 node_modules
-src/protobuf/*
+lib/src/protobuf/*
 .vscode/*

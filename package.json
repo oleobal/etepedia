@@ -4,14 +4,21 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "esrun": "^3.2.26",
     "etebase": "^0.43.1",
+    "svelte": "^4.2.18",
+    "svelte-persisted-store": "^0.11.0",
+    "svelte-spa-router": "^4.0.1",
     "ts-proto": "^1.181.1",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^5.3.5"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@tsconfig/svelte": "^5.0.4"
   },
   "type": "module",
   "scripts": {
-    "dev": "esbuild src/app.ts --bundle --sourcemap --format=esm --outfile=html/js/bundle.js --servedir=html --watch",
-    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src ./protobuf/*"
+    "dev": "vite dev",
+    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/lib ./protobuf/*"
   }
 }

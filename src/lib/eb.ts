@@ -1,13 +1,13 @@
 import * as Etebase from "etebase";
-import * as Protobuf from "./protobuf/page.ts";
+import * as Protobuf from "./protobuf/page";
 
 const COLLECTION_TYPE = "etepedia.directory";
 
 class EBBackedItem {
   item: Etebase.Item | undefined;
   meta: Etebase.ItemMetadata = {};
-  populated: Boolean = false;
-  content: {} = {};
+  populated: boolean = false;
+  content: {} | null = null;
 
   constructor(i?: Etebase.Item) {
     if (i) {
@@ -20,7 +20,7 @@ class EBBackedItem {
 }
 
 export class Page extends EBBackedItem {
-  content: Protobuf.Page;
+  content: Protobuf.Page | null = null;
 
   constructor(i?: Etebase.Item) {
     super(i);
@@ -38,7 +38,7 @@ export class Page extends EBBackedItem {
 }
 
 export class Group extends EBBackedItem {
-  content: Protobuf.Group;
+  content: Protobuf.Group | null = null;
 
   constructor(i?: Etebase.Item) {
     super(i);
@@ -56,42 +56,46 @@ export class Group extends EBBackedItem {
 }
 
 export class Directory {
-  pages: Page[] = [];
-  groups: Group[] = [];
+  pages: Map<string, Page> = new Map();
+  populated: boolean = false;
 
   collectionManager: Etebase.CollectionManager;
   collection: Etebase.Collection;
   itemManager: Etebase.ItemManager;
   collectionInfo: Protobuf.CollectionInfo;
 
-  static async Create(etebase: Etebase.Account): Promise<Directory> {
+  static async Create(
+    collectionManager: Etebase.CollectionManager,
+    meta: Etebase.ItemMetadata
+  ): Promise<Directory> {
     const me = new Directory();
 
-    me.collectionManager = etebase.getCollectionManager();
+    me.collectionManager = collectionManager;
+    me.collectionInfo = { pages: [], groups: [] };
+    me.collection = await me.collectionManager.create(
+      COLLECTION_TYPE,
+      meta,
+      Protobuf.CollectionInfo.encode(me.collectionInfo).finish()
+    );
+    await me.collectionManager.upload(me.collection);
+    me.itemManager = me.collectionManager.getItemManager(me.collection);
 
-    let collections = await me.collectionManager.list(COLLECTION_TYPE);
-
-    if (collections.data.length == 0) {
-      me.collectionInfo = { pages: [], groups: [] };
-      me.collection = await me.collectionManager.create(
-        COLLECTION_TYPE,
-        {
-          name: "etepedia0",
-          description: "etepedia directory 0",
-          color: "#aa0000",
-        },
-        Protobuf.CollectionInfo.encode(me.collectionInfo).finish()
-      );
-      await me.collectionManager.upload(me.collection);
-      me.itemManager = me.collectionManager.getItemManager(me.collection);
-    } else {
-      me.collection = collections.data[0];
-      me.itemManager = me.collectionManager.getItemManager(me.collection);
-      await me.update();
-    }
     return me;
   }
 
+  static async LoadFromServer(
+    collectionManager: Etebase.CollectionManager,
+    collection: Etebase.Collection
+  ): Promise<Directory> {
+    const me = new Directory();
+    me.collectionManager = collectionManager;
+    me.collection = collection;
+    me.itemManager = collectionManager.getItemManager(collection);
+    await me.update();
+    return me;
+  }
+
+  /** fetch updates to collection and this.collectionInfo */
   async update() {
     const stoken = this.collection.stoken;
     this.collection = await this.collectionManager.fetch(this.collection.uid, {
@@ -102,17 +106,14 @@ export class Directory {
     );
   }
 
+  /** fill this.pages with Page */
   async populate() {
     if (this.collectionInfo.pages.length > 0) {
-      this.pages = (
+      (
         await this.itemManager.fetchMulti(this.collectionInfo.pages)
-      ).data.map((it) => new Page(it));
+      ).data.forEach((it) => this.pages.set(it.uid, new Page(it)));
     }
-    if (this.collectionInfo.groups.length > 0) {
-      this.groups = (
-        await this.itemManager.fetchMulti(this.collectionInfo.groups)
-      ).data.map((it) => new Group(it));
-    }
+    this.populated = true;
   }
 
   /**
@@ -137,7 +138,7 @@ export class Directory {
     } else {
       page.item = await this.itemManager.create(metadata, content);
       this.collectionInfo.pages.push(page.item.uid);
-      this.pages.push(page);
+      this.pages[page.item.uid] = page;
     }
     if (page.content.groups && page.content.groups.length != 0) {
       // TODO
@@ -147,4 +148,18 @@ export class Directory {
     );
     return await this.itemManager.batch([page.item, this.collection.item]);
   }
+}
+
+export async function listDirectories(
+  etebase: Etebase.Account
+): Promise<Directory[]> {
+  let collectionManager = etebase.getCollectionManager();
+  let collections = await collectionManager.list(COLLECTION_TYPE);
+
+  let directories = Promise.all(
+    collections.data.map((collection) =>
+      Directory.LoadFromServer(collectionManager, collection)
+    )
+  );
+  return directories;
 }
