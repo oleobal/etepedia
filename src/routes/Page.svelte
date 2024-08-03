@@ -3,6 +3,8 @@
   import { Directory, Page } from "../lib/eb";
   import { onDestroy } from "svelte";
   import { onMount } from "svelte";
+  import { parse } from "marked";
+  import DOMPurify from "dompurify";
 
   export let params: { uid?: string } = {};
 
@@ -23,16 +25,26 @@
   onMount(async () => {
     if (!page.populated) {
       await page.populate();
-      text = page.content.article;
     }
+    text = page.content.article;
   });
 </script>
 
 <h1>{page.meta.name}</h1>
 <p><em>{page.meta.description}</em></p>
 
-{#if text}
-  <p>{text}</p>
-{:else}
-  <p>Loading..</p>
-{/if}
+<hr />
+
+<div class="page-text">
+  {#if text}
+    {@html DOMPurify.sanitize(parse(text))}
+  {:else}
+    <p>Loading..</p>
+  {/if}
+</div>
+
+<style>
+  .page-text {
+    text-align: left;
+  }
+</style>

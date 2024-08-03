@@ -18,11 +18,11 @@
 
 {#if !pages}
   <p>Populating..</p>
+{:else if pages.size === 0}
+  <p>No pages; <a href="/#/create-page"><button>create one</button></a></p>
 {:else}
-  {#if pages.size === 0}
-    <p>No pages</p>
-  {/if}
-  {#each [...pages] as [uid, page]}
-    <a href={`/#/page/${uid}`}><PageCard {page} /></a>
+  {#each [...pages] as [_, page]}
+    <PageCard {page} />
   {/each}
+  <a href="/#/create-page"><button>New Page</button></a>
 {/if}

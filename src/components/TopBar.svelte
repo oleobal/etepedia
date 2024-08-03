@@ -3,7 +3,6 @@
   import { currentDirectory, directories, etebaseAccount } from "../stores";
   import { onDestroy } from "svelte";
   import { Directory } from "../lib/eb";
-  import DirectoryIndex from "../components/DirectoryIndex.svelte";
 
   let account: Etebase.Account;
   let dirs: Directory[];
@@ -23,12 +22,34 @@
   onDestroy(unsubscribeFromCurrentDirectory);
 </script>
 
-<p>Logged in as <b>{account.user.username}</b></p>
-
-{#if dirs.length == 0}No directories; <a href="/#/create-directory"
-    >create one</a
-  >
-{:else}
-  <h2>{currentDir.collection.getMeta().name}</h2>
-  <DirectoryIndex directory={currentDir} />
+{#if account != null}
+  <div class="topbar">
+    <div>
+      <a href="/#/directories"><button style="width: 2.3em">#</button></a>
+      {#if currentDir != null}
+        <a href="/#/">{currentDir.collection.getMeta().name}</a>
+      {:else}
+        (no directory selected)
+      {/if}
+    </div>
+    <div>
+      <input placeholder="Search" />
+    </div>
+    <div><a href="/#/settings">{account.user.username}</a></div>
+  </div>
 {/if}
+
+<style lang="css">
+  .topbar {
+    align-items: center;
+    border-bottom: 1px solid;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 5px;
+  }
+
+  a {
+    color: var(--fg);
+  }
+</style>

@@ -4,7 +4,10 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@zerodevx/svelte-toast": "^0.9.5",
+    "dompurify": "^3.1.6",
     "etebase": "^0.43.1",
+    "marked": "^13.0.3",
     "svelte": "^4.2.18",
     "svelte-persisted-store": "^0.11.0",
     "svelte-spa-router": "^4.0.1",

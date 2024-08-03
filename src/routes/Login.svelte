@@ -11,6 +11,7 @@
   import { replace } from "svelte-spa-router";
   import { onMount } from "svelte";
 
+  let loginInProgress = false;
   let username: string;
   let password: string;
   let endpoint: string;
@@ -45,6 +46,7 @@
 
   async function handleLogin() {
     console.info("Logging into Etebase..");
+    loginInProgress = true;
     try {
       const ebAccount = await Etebase.Account.login(
         username,
@@ -56,6 +58,7 @@
 
       await loadSession(ebAccount);
     } catch (error) {
+      loginInProgress = false;
       console.error(error);
     }
   }
@@ -81,5 +84,5 @@
     bind:value={password}
   />
   <input style="width: 100%" placeholder="ETB endpoint" bind:value={endpoint} />
-  <button on:click={handleLogin}>Log in</button>
+  <button on:click={handleLogin} disabled={loginInProgress}>Log in</button>
 </div>

@@ -1,39 +1,40 @@
 import Login from "./routes/Login.svelte";
-import Index from "./routes/Index.svelte";
+import ListPages from "./routes/ListPages.svelte";
 import NotFound from "./routes/NotFound.svelte";
+import Settings from "./routes/Settings.svelte";
 import { wrap } from "svelte-spa-router/wrap";
-import { replace } from "svelte-spa-router";
-import { etebaseAccount } from "./stores";
-import { get } from "svelte/store";
 import CreateDirectory from "./routes/CreateDirectory.svelte";
 import CreatePage from "./routes/CreatePage.svelte";
 import Page from "./routes/Page.svelte";
 
-function isLoggedIn(): boolean {
-  if (get(etebaseAccount) === null) {
-    replace("/login");
-    return false;
-  }
-  return true;
-}
+import { redirectIfNotLoggedIn } from "./nav";
+import ListDirectories from "./routes/ListDirectories.svelte";
 
 export default {
   "/login": Login,
   "/create-directory": wrap({
     component: CreateDirectory,
-    conditions: [isLoggedIn],
+    conditions: [redirectIfNotLoggedIn],
+  }),
+  "/directories/": wrap({
+    component: ListDirectories,
+    conditions: [redirectIfNotLoggedIn],
   }),
   "/create-page": wrap({
     component: CreatePage,
-    conditions: [isLoggedIn],
+    conditions: [redirectIfNotLoggedIn],
   }),
   "/page/:uid": wrap({
     component: Page,
-    conditions: [isLoggedIn],
+    conditions: [redirectIfNotLoggedIn],
+  }),
+  "/settings": wrap({
+    component: Settings,
+    conditions: [redirectIfNotLoggedIn],
   }),
   "/": wrap({
-    component: Index,
-    conditions: [isLoggedIn],
+    component: ListPages,
+    conditions: [redirectIfNotLoggedIn],
   }),
   // The catch-all route must always be last
   "*": NotFound,
