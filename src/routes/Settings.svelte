@@ -1,13 +1,5 @@
 <script lang="ts">
-  import * as Etebase from "etebase";
-  import { etebaseAccount, savedEtebaseSession } from "../stores";
-  import { push } from "svelte-spa-router";
-
-  function handleLogout() {
-    etebaseAccount.set(null);
-    savedEtebaseSession.reset();
-    push("/");
-  }
+  import { logout } from "../nav";
 </script>
 
-<button on:click={handleLogout}>Log out</button>
+<button on:click={logout}>Log out</button>

@@ -1,15 +1,33 @@
-<script>
-  import Router from "svelte-spa-router";
+<script lang="ts">
+  import Router, { push } from "svelte-spa-router";
   import TopBar from "./components/TopBar.svelte";
   import routes from "./routes";
   import { SvelteToast } from "@zerodevx/svelte-toast";
+  import { restoreSavedSession } from "./nav";
+  import { onDestroy, onMount } from "svelte";
+  import Login from "./components/Login.svelte";
+  import { etebaseAccount } from "./stores";
+
+  let ebAccount;
+  const unsubscribe = etebaseAccount.subscribe((val) => {
+    ebAccount = val;
+  });
+  onDestroy(unsubscribe);
+
+  onMount(async () => {
+    if (ebAccount === null) await restoreSavedSession();
+  });
 </script>
 
-<TopBar />
-<main>
-  <Router {routes} />
-</main>
-<SvelteToast />
+{#if ebAccount != null}
+  <TopBar />
+  <main>
+    <Router {routes} />
+  </main>
+  <SvelteToast />
+{:else}
+  <Login />
+{/if}
 
 <style>
   main {

@@ -3,6 +3,9 @@ import * as Protobuf from "./protobuf/page";
 
 const COLLECTION_TYPE = "etepedia.directory";
 
+export type PageID = ItemID;
+export type ItemID = string;
+
 class EBBackedItem {
   item: Etebase.Item | undefined;
   meta: Etebase.ItemMetadata = {};
@@ -56,7 +59,7 @@ export class Group extends EBBackedItem {
 }
 
 export class Directory {
-  pages: Map<string, Page> = new Map();
+  pages: Map<PageID, Page> = new Map();
   populated: boolean = false;
 
   collectionManager: Etebase.CollectionManager;
@@ -162,4 +165,14 @@ export async function listDirectories(
     )
   );
   return directories;
+}
+
+/** "what directory does this page belong to?" */
+export function indexPages(dirs: Directory[]): Map<PageID, Directory> {
+  type PageRef = [PageID, Directory]; // for some reason without the cast it is interpreted as (string | Directory) rather than a tuple
+  return new Map(
+    dirs.flatMap((dir) =>
+      dir.collectionInfo.pages.map((pageID) => [pageID, dir] as PageRef)
+    )
+  );
 }

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { currentDirectory } from "../stores";
   import { Directory, Page } from "../lib/eb";
-  import { replace } from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
   import { onDestroy } from "svelte";
+  import { toast } from "@zerodevx/svelte-toast";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
 
@@ -18,19 +19,25 @@
   let text: string;
 
   let previewing: boolean = false;
+  let creating: boolean = false;
 
   async function switchPreview() {
     previewing = !previewing;
   }
 
   async function handleCreation() {
+    creating = true;
     let page = new Page();
     page.meta.name = name;
     page.meta.description = description;
     page.content.article = text;
 
     await currentDir.uploadPage(page);
-    replace(`/page/${page.item.uid}`);
+
+    currentDirectory.set(currentDir);
+
+    toast.push("Page created");
+    push(`/page/${page.item.uid}`);
   }
 </script>
 
@@ -82,7 +89,7 @@
       >
       <button
         on:click={handleCreation}
-        disabled={!(name && description && text)}>Create</button
+        disabled={!(name && description && text) || creating}>Create</button
       >
     </div>
   </div>
