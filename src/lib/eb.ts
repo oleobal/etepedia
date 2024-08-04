@@ -3,8 +3,9 @@ import * as Protobuf from "./protobuf/page";
 
 const COLLECTION_TYPE = "etepedia.directory";
 
-export type PageID = ItemID;
-export type ItemID = string;
+export type PageID = EBItemID;
+export type DirectoryID = EBItemID;
+export type EBItemID = string;
 
 class EBBackedItem {
   item: Etebase.Item | undefined;
@@ -155,16 +156,23 @@ export class Directory {
 
 export async function listDirectories(
   etebase: Etebase.Account
-): Promise<Directory[]> {
+): Promise<Map<DirectoryID, Directory>> {
   let collectionManager = etebase.getCollectionManager();
   let collections = await collectionManager.list(COLLECTION_TYPE);
 
-  let directories = Promise.all(
-    collections.data.map((collection) =>
-      Directory.LoadFromServer(collectionManager, collection)
+  type DirByUid = [DirectoryID, Directory];
+
+  let directories = await Promise.all(
+    collections.data.map(
+      async (collection) =>
+        [
+          collection.uid,
+          await Directory.LoadFromServer(collectionManager, collection),
+        ] as DirByUid
     )
   );
-  return directories;
+
+  return new Map(directories);
 }
 
 /** "what directory does this page belong to?" */

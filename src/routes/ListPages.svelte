@@ -1,32 +1,74 @@
 <script lang="ts">
   import * as Etebase from "etebase";
-  import { currentDirectory, directories, etebaseAccount } from "../stores";
+  import {
+    currentDirectory,
+    directoriesById,
+    etebaseAccount,
+    userSettings,
+  } from "../stores";
   import { onDestroy } from "svelte";
-  import { Directory } from "../lib/eb";
-  import DirectoryIndex from "../components/DirectoryIndex.svelte";
+  import { Directory, Page } from "../lib/eb";
+  import PageCard from "../components/PageCard.svelte";
+  import { onMount } from "svelte";
 
   let account: Etebase.Account;
-  let dirs: Directory[];
+  let dirs: Map<string, Directory>;
   let currentDir: Directory;
+  let recentPages: string[] = [];
+
   const unsubscribeFromAccount = etebaseAccount.subscribe(
     (acc) => (account = acc)
   );
-  const unsubscribeFromDirectories = directories.subscribe((d) => (dirs = d));
+  onDestroy(unsubscribeFromAccount);
+  const unsubscribeFromDirectories = directoriesById.subscribe(
+    (d) => (dirs = d)
+  );
+  onDestroy(unsubscribeFromDirectories);
   const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
     async (d) => {
       currentDir = d;
     }
   );
-
-  onDestroy(unsubscribeFromAccount);
-  onDestroy(unsubscribeFromDirectories);
   onDestroy(unsubscribeFromCurrentDirectory);
+  const unsubscribeFromUserSettings = userSettings.subscribe((us) => {
+    let z = us.latestPageViewsByDirectory[currentDir.collection.uid];
+    if (z) recentPages = z;
+  });
+  onDestroy(unsubscribeFromUserSettings);
+
+  let pages: Map<string, Page> | null = null;
+
+  onMount(async () => {
+    await currentDir.update();
+    if (!currentDir.populated) {
+      await currentDir.populate();
+    }
+    pages = currentDir.pages;
+  });
 </script>
 
-{#if dirs.length == 0}No directories; <a href="/#/create-directory"
+{#if dirs.size == 0}No directories; <a href="/#/create-directory"
     ><button>create one</button></a
   >
 {:else}
   <h1>Pages in {currentDir.collection.getMeta().name}</h1>
-  <DirectoryIndex directory={currentDir} />
+  <div style="text-align: left;">
+    {#if !pages}
+      <p>Populating..</p>
+    {:else if pages.size === 0}
+      <p>No pages; <a href="/#/create-page"><button>create one</button></a></p>
+    {:else}
+      {#if recentPages.length > 0}
+        <h2>Recently viewed pages</h2>
+        {#each recentPages.reverse() as pageId}
+          <PageCard page={currentDir.pages.get(pageId)} />
+        {/each}
+        <h2>All pages</h2>
+      {/if}
+      {#each [...pages] as [_, page]}
+        <PageCard {page} />
+      {/each}
+      <a href="/#/create-page"><button>New Page</button></a>
+    {/if}
+  </div>
 {/if}

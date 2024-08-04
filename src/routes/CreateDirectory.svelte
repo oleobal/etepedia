@@ -1,6 +1,5 @@
 <script lang="ts">
-  import * as Etebase from "etebase";
-  import { etebaseAccount, directories, currentDirectory } from "../stores";
+  import { etebaseAccount, directoriesById, currentDirectory } from "../stores";
   import { listDirectories, Directory } from "../lib/eb";
   import { replace } from "svelte-spa-router";
   import { get } from "svelte/store";
@@ -17,7 +16,7 @@
     });
 
     let dirs = await listDirectories(ebAccount);
-    directories.set(dirs);
+    directoriesById.set(dirs);
     currentDirectory.set(newDir);
     replace("/");
   }

@@ -1,25 +1,49 @@
 import { push } from "svelte-spa-router";
 import {
   currentDirectory,
-  directories,
+  directoriesById,
   etebaseAccount,
-  globalPageIndex,
+  pagesById,
   savedEtebaseSession,
+  userSettings,
 } from "./stores";
 import { get } from "svelte/store";
 import { indexPages, listDirectories } from "./lib/eb";
 import * as Etebase from "etebase";
+import { UserSettings } from "./lib/settings";
 
 export async function loadSession(ebAccount: Etebase.Account) {
   console.info("Successfully connected!");
 
   let dirs = await listDirectories(ebAccount);
-  directories.set(dirs);
-  if (dirs.length > 0) {
-    currentDirectory.set(dirs[0]);
+  directoriesById.set(dirs);
+
+  let uSettings: UserSettings;
+  const unsubscribeFromUserSettings = userSettings.subscribe(
+    (us) => (uSettings = us)
+  );
+
+  if (dirs.size > 0) {
+    let userSelectedDir = uSettings.currentDirectory;
+    if (userSelectedDir) {
+      try {
+        currentDirectory.set(dirs.get(userSelectedDir));
+      } catch (error) {
+        console.error(error);
+        userSettings.update((us) => {
+          delete us.currentDirectory;
+          return us;
+        });
+        currentDirectory.set(dirs.values().next().value);
+      }
+    } else {
+      currentDirectory.set(dirs.values().next().value);
+    }
   }
-  let gpi = await indexPages(dirs);
-  globalPageIndex.set(gpi);
+  let gpi = await indexPages(Array.from(dirs.values())); // shouldn't be needed anymore in future versions where map works on iterators
+  pagesById.set(gpi);
+
+  unsubscribeFromUserSettings();
   etebaseAccount.set(ebAccount); // last because this will trigger updates
 }
 
@@ -42,8 +66,8 @@ export async function restoreSavedSession() {
 export function logout() {
   etebaseAccount.set(null);
   savedEtebaseSession.reset();
-  directories.set(null);
+  directoriesById.set(null);
   currentDirectory.set(null);
-  globalPageIndex.set(new Map());
+  pagesById.set(new Map());
   push("/");
 }

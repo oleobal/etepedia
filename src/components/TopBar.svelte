@@ -1,24 +1,20 @@
 <script lang="ts">
   import * as Etebase from "etebase";
-  import { currentDirectory, directories, etebaseAccount } from "../stores";
+  import { currentDirectory, etebaseAccount } from "../stores";
   import { onDestroy } from "svelte";
   import { Directory } from "../lib/eb";
 
   let account: Etebase.Account;
-  let dirs: Directory[];
   let currentDir: Directory;
   const unsubscribeFromAccount = etebaseAccount.subscribe(
     (acc) => (account = acc)
   );
-  const unsubscribeFromDirectories = directories.subscribe((d) => (dirs = d));
+  onDestroy(unsubscribeFromAccount);
   const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
     async (d) => {
       currentDir = d;
     }
   );
-
-  onDestroy(unsubscribeFromAccount);
-  onDestroy(unsubscribeFromDirectories);
   onDestroy(unsubscribeFromCurrentDirectory);
 </script>
 

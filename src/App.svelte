@@ -1,18 +1,30 @@
 <script lang="ts">
-  import Router, { push } from "svelte-spa-router";
+  import Router from "svelte-spa-router";
   import TopBar from "./components/TopBar.svelte";
   import routes from "./routes";
   import { SvelteToast } from "@zerodevx/svelte-toast";
   import { restoreSavedSession } from "./nav";
   import { onDestroy, onMount } from "svelte";
   import Login from "./components/Login.svelte";
-  import { etebaseAccount } from "./stores";
+  import { etebaseAccount, userSettings, currentDirectory } from "./stores";
 
   let ebAccount;
-  const unsubscribe = etebaseAccount.subscribe((val) => {
+  const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
     ebAccount = val;
   });
-  onDestroy(unsubscribe);
+  onDestroy(unsubscribeFromAccount);
+
+  const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
+    (currentDir) => {
+      if (currentDir) {
+        userSettings.update((userSetts) => {
+          userSetts.currentDirectory = currentDir?.collection?.uid;
+          return userSetts;
+        });
+      }
+    }
+  );
+  onDestroy(unsubscribeFromCurrentDirectory);
 
   onMount(async () => {
     if (ebAccount === null) await restoreSavedSession();

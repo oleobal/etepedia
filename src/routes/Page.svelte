@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentDirectory, globalPageIndex } from "../stores";
+  import { currentDirectory, pagesById, userSettings } from "../stores";
   import { Directory, Page } from "../lib/eb";
   import { onDestroy } from "svelte";
   import { onMount } from "svelte";
@@ -16,7 +16,7 @@
     (newVal) => (currentDir = newVal)
   );
   onDestroy(unsubscribeFromCurrentDir);
-  const unsubscribeFromPageIndex = globalPageIndex.subscribe(
+  const unsubscribeFromPageIndex = pagesById.subscribe(
     (newVal) => (pageIndex = newVal)
   );
   onDestroy(unsubscribeFromPageIndex);
@@ -26,7 +26,7 @@
   var text: string | null = null;
 
   onMount(async () => {
-    if (pageIndex.get(params?.uid)) {
+    if (pageIndex.has(params?.uid)) {
       dir = pageIndex.get(params.uid);
       if (!dir.populated) {
         await dir.populate();
@@ -40,7 +40,28 @@
         await page.populate();
       }
       text = page.content.article;
-    } else {
+
+      userSettings.update((us) => {
+        if (!us.latestPageViewsByDirectory[dir.collection.uid]) {
+          us.latestPageViewsByDirectory[dir.collection.uid] = [];
+        }
+        let existingIndex = us.latestPageViewsByDirectory[
+          dir.collection.uid
+        ].findIndex((it) => it === page.item.uid);
+        if (existingIndex !== -1) {
+          us.latestPageViewsByDirectory[dir.collection.uid].splice(
+            existingIndex,
+            1
+          );
+        }
+        let newLength = us.latestPageViewsByDirectory[dir.collection.uid].push(
+          page.item.uid
+        );
+        if (newLength > 100) {
+          us.latestPageViewsByDirectory[dir.collection.uid].shift();
+        }
+        return us;
+      });
     }
   });
 </script>
