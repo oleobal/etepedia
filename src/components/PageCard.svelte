@@ -4,7 +4,7 @@
   export let page: Page;
 </script>
 
-<a href={`/#/page/${page.item.uid}`}>
+<a href={`#/page/${page.item.uid}`}>
   <div class="page-card">
     <h3>
       {page.meta.name}
@@ -27,5 +27,9 @@
     text-align: left;
     padding: 10px;
     margin-bottom: 5px;
+  }
+
+  .page-card:hover {
+    border-color: var(--primary);
   }
 </style>

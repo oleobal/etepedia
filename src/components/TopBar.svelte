@@ -1,48 +1,75 @@
 <script lang="ts">
-  import * as Etebase from "etebase";
-  import { currentDirectory, etebaseAccount } from "../stores";
+  import { currentDirectory } from "../stores";
   import { onDestroy } from "svelte";
   import { Directory } from "../lib/eb";
 
-  let account: Etebase.Account;
   let currentDir: Directory;
-  const unsubscribeFromAccount = etebaseAccount.subscribe(
-    (acc) => (account = acc)
-  );
-  onDestroy(unsubscribeFromAccount);
   const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
     async (d) => {
       currentDir = d;
     }
   );
   onDestroy(unsubscribeFromCurrentDirectory);
+
+  export let sidebarOpen = false;
 </script>
 
-{#if account != null}
-  <div class="topbar">
-    <div>
-      <a href="/#/directories"><button style="width: 2.3em">#</button></a>
+<div class="topbar" class:sidebarOpen>
+  <button
+    style="height: 42px; width: 42px; margin-right: 5px;"
+    on:click={() => (sidebarOpen = !sidebarOpen)}
+    >{sidebarOpen ? "X" : "#"}</button
+  >
+  <div class="restofbar">
+    <div style="text-wrap: nowrap; overflow-x: clip;">
       {#if currentDir != null}
-        <a href="/#/">{currentDir.collection.getMeta().name}</a>
+        <a href="#/">{currentDir.collection.getMeta().name}</a>
       {:else}
         (no directory selected)
       {/if}
     </div>
-    <div>
-      <input placeholder="Search" />
-    </div>
-    <div><a href="/#/settings">{account.user.username}</a></div>
+    <div style="flex-grow: 1"></div>
+    <input placeholder="Search" />
   </div>
-{/if}
+</div>
+<div
+  class="filler-when-fixed"
+  style={"display:" + (sidebarOpen ? "block" : "none")}
+>
+  <!-- this is to avoid page elements shifting when the top bar switches to fixed positioning -->
+</div>
 
-<style lang="css">
+<style>
   .topbar {
     align-items: center;
     border-bottom: 1px solid;
     display: flex;
-    justify-content: space-between;
+    justify-content: stretch;
     margin: 0;
+    max-height: 42px;
+    height: 42px;
+    box-sizing: border-box;
+    background-color: var(--bg);
+  }
+
+  .restofbar {
     padding: 5px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .filler-when-fixed {
+    height: 42px;
+  }
+
+  .sidebarOpen {
+    position: fixed;
+    width: 100%;
+
+    box-shadow: 0 -10px 40px var(--fg);
+    transition: box-shadow 0.2s ease-in-out;
   }
 
   a {

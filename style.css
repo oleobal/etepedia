@@ -16,12 +16,15 @@
 
 a {
   text-decoration: none;
+  color: var(--primary);
 }
 
 body {
   background-color: var(--bg);
   color: var(--fg);
   border-color: var(--fg);
+  --accent-font: "Cantarell", "sans-serif";
+  --text-font: "serif";
 }
 
 button {

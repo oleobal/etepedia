@@ -11,12 +11,12 @@
   onDestroy(unsubscribeFromDirectories);
 </script>
 
-{#if dirs.size == 0}No directories; <a href="/#/create-directory">create one</a>
+{#if dirs.size == 0}No directories; <a href="#/create-directory">create one</a>
 {:else}
   <h1>Index of directories</h1>
 
   {#each dirs.values() as directory}
     <DirectoryCard {directory} />
   {/each}
-  <a href="/#/create-directory"><button>New directory</button></a>
+  <a href="#/create-directory"><button>New directory</button></a>
 {/if}

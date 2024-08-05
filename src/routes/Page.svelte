@@ -34,7 +34,7 @@
       page = dir.pages.get(params.uid);
       if (dir != currentDir) {
         currentDirectory.set(dir);
-        toast.push("Now viewing directory " + dir.collection.getMeta().name);
+        "Now viewing directory <b>" + dir.collection.getMeta().name + "</b>";
       }
       if (!page.populated) {
         await page.populate();

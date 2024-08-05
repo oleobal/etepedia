@@ -7,6 +7,9 @@
   import { onDestroy, onMount } from "svelte";
   import Login from "./components/Login.svelte";
   import { etebaseAccount, userSettings, currentDirectory } from "./stores";
+  import Sidebar from "./components/Sidebar.svelte";
+
+  let sidebarOpen: boolean = false;
 
   let ebAccount;
   const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
@@ -32,16 +35,23 @@
 </script>
 
 {#if ebAccount != null}
-  <TopBar />
+  <TopBar bind:sidebarOpen />
+  <Sidebar bind:sidebarOpen />
   <main>
     <Router {routes} />
   </main>
-  <SvelteToast />
+  <SvelteToast options={{ reversed: true }} />
 {:else}
   <Login />
 {/if}
 
 <style>
+  :root {
+    --toastContainerTop: auto;
+    --toastContainerRight: 20px;
+    --toastContainerBottom: 20px;
+    --toastContainerLeft: auto;
+  }
   main {
     text-align: center;
     padding: 1em;
