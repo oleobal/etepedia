@@ -2,21 +2,33 @@
   --fg: #000;
   --bg: #fff;
   --primary: hsl(240, 100%, 60%);
-  --primary-lighter: hsl(240, 100%, 70%);
+  --primary-highlight: hsl(240, 100%, 70%);
   --primary-disabled: hsl(240, 100%, 80%);
+
+  --gray: hsl(0, 0%, 50%);
+  --gray-highlight: hsl(0, 0%, 30%);
+  --primary-disabled: hsl(0, 0%, 70%);
 }
 
 .dark-colors {
   --fg: #fff;
   --bg: hsl(239, 46%, 25%);
   --primary: hsl(283, 100%, 35%);
-  --primary-lighter: hsl(283, 100%, 45%);
+  --primary-highlight: hsl(283, 100%, 45%);
   --primary-disabled: hsl(283, 100%, 20%);
+
+  --gray: hsl(0, 0%, 50%);
+  --gray-highlight: hsl(0, 0%, 70%);
+  --primary-disabled: hsl(0, 0%, 30%);
 }
 
 a {
   text-decoration: none;
   color: var(--primary);
+}
+
+input {
+  accent-color: var(--primary);
 }
 
 body {
@@ -48,10 +60,20 @@ button {
 }
 
 button:hover {
-  background-color: var(--primary-lighter);
+  background-color: var(--primary-highlight);
 }
 
 button:disabled {
   background-color: var(--primary-disabled);
-  color: gray;
+  color: var(--gray);
+}
+
+.gray-button {
+  background-color: var(--gray);
+}
+.gray-button:hover {
+  background-color: var(--primary-highlight);
+}
+.gray-button:disabled {
+  background-color: var(--gray-disabled);
 }

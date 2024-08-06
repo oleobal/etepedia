@@ -7,13 +7,6 @@
   import { parse } from "marked";
   import DOMPurify from "dompurify";
 
-  let currentDir: Directory;
-
-  const unsubscribe = currentDirectory.subscribe(
-    (newVal) => (currentDir = newVal)
-  );
-  onDestroy(unsubscribe);
-
   let name: string;
   let description: string;
   let text: string;
@@ -32,17 +25,19 @@
     page.meta.description = description;
     page.content.article = text;
 
-    await currentDir.uploadPage(page);
-
-    currentDirectory.set(currentDir);
+    await $currentDirectory.uploadPage(page);
 
     toast.push("Page created");
     push(`/page/${page.item.uid}`);
   }
 </script>
 
+<svelte:head>
+  <title>Create page</title>
+</svelte:head>
+
 <div>
-  <h1>Create page on {currentDir.collection.getMeta().name}</h1>
+  <h1>Create page on {$currentDirectory.collection.getMeta().name}</h1>
   <div class="form">
     <div class="max-width">
       <input

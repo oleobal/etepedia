@@ -1,25 +1,20 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import { Directory } from "../lib/eb";
   import { currentDirectory } from "../stores";
   import { toast } from "@zerodevx/svelte-toast";
+  import { push } from "svelte-spa-router";
   export let directory: Directory;
 
   let nbPages = directory.collectionInfo.pages.length;
 
-  let currentDir: Directory;
   let isCurrent: boolean;
-
-  let unsubscribeFromCurrentDir = currentDirectory.subscribe((val) => {
-    currentDir = val;
-    isCurrent = directory === currentDir;
-  });
-  onDestroy(unsubscribeFromCurrentDir);
+  $: isCurrent = directory === $currentDirectory;
 
   let meta = directory.collection.getMeta();
 
   function selectDirectory() {
     currentDirectory.set(directory);
+    push("/");
     toast.push(
       "Now viewing directory <b>" + directory.collection.getMeta().name + "</b>"
     );

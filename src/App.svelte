@@ -7,9 +7,11 @@
   import { onDestroy, onMount } from "svelte";
   import Login from "./components/Login.svelte";
   import { etebaseAccount, userSettings, currentDirectory } from "./stores";
-  import Sidebar from "./components/Sidebar.svelte";
+  import DirSidebar from "./components/DirSidebar.svelte";
+  import SearchSidebar from "./components/SearchSidebar.svelte";
 
-  let sidebarOpen: boolean = false;
+  let leftSidebarOpen: boolean = false;
+  let rightSidebarOpen: boolean = false;
 
   let ebAccount;
   const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
@@ -35,8 +37,9 @@
 </script>
 
 {#if ebAccount != null}
-  <TopBar bind:sidebarOpen />
-  <Sidebar bind:sidebarOpen />
+  <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
+  <DirSidebar bind:sidebarOpen={leftSidebarOpen} />
+  <SearchSidebar bind:sidebarOpen={rightSidebarOpen} />
   <main>
     <Router {routes} />
   </main>

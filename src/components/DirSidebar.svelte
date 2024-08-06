@@ -1,35 +1,20 @@
 <script lang="ts">
   import { directoriesById, etebaseAccount } from "../stores";
-  import { onDestroy } from "svelte";
-  import { Directory } from "../lib/eb";
-  import DirectoryCard from "../components/DirectoryCard.svelte";
-  import * as Etebase from "etebase";
+  import DirectoryCard from "./DirectoryCard.svelte";
 
   export let sidebarOpen = false;
-
-  let account: Etebase.Account;
-  const unsubscribeFromAccount = etebaseAccount.subscribe(
-    (acc) => (account = acc)
-  );
-  onDestroy(unsubscribeFromAccount);
-
-  let dirs: Map<string, Directory>;
-  const unsubscribeFromDirectories = directoriesById.subscribe(
-    (d) => (dirs = d)
-  );
-  onDestroy(unsubscribeFromDirectories);
 </script>
 
 <aside class:sidebarOpen>
   <nav>
-    {#if dirs.size == 0}No directories; <a href="#/create-directory"
+    {#if $directoriesById.size == 0}No directories; <a href="#/create-directory"
         >create one</a
       >
     {:else}
-      <h1>Select a directory</h1>
+      <h1 style="font-size: 19px;">Select a directory</h1>
 
       <div class="dir-list">
-        {#each dirs.values() as directory}
+        {#each $directoriesById.values() as directory}
           <DirectoryCard {directory} />
         {/each}
       </div>
@@ -37,14 +22,20 @@
     {/if}
     <div style="flex-grow: 1"></div>
     <div style="font-family: var(--accent-font)">
-      Logged in as <b>{account.user.username}</b>.
-      <a href="#/settings">Settings</a>
+      Logged in as <b>{$etebaseAccount.user.username}</b>.
+      <a
+        href="#/settings"
+        on:click={() => {
+          sidebarOpen = false;
+        }}>Settings</a
+      >
     </div>
   </nav>
 </aside>
 
 <style>
   nav {
+    all: unset; /* weird default style rules on nav */
     width: 100%;
     display: flex;
     flex-direction: column;

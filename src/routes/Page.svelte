@@ -1,40 +1,29 @@
 <script lang="ts">
   import { currentDirectory, pagesById, userSettings } from "../stores";
   import { Directory, Page } from "../lib/eb";
-  import { onDestroy } from "svelte";
-  import { onMount } from "svelte";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
   import { toast } from "@zerodevx/svelte-toast";
 
-  export let params: { uid?: string } = {};
-
-  let pageIndex: Map<string, Directory>;
-  let currentDir: Directory;
-
-  const unsubscribeFromCurrentDir = currentDirectory.subscribe(
-    (newVal) => (currentDir = newVal)
-  );
-  onDestroy(unsubscribeFromCurrentDir);
-  const unsubscribeFromPageIndex = pagesById.subscribe(
-    (newVal) => (pageIndex = newVal)
-  );
-  onDestroy(unsubscribeFromPageIndex);
+  export let params: { uid: string } = { uid: "" };
 
   var page: Page;
   var dir: Directory;
   var text: string | null = null;
 
-  onMount(async () => {
-    if (pageIndex.has(params?.uid)) {
-      dir = pageIndex.get(params.uid);
+  async function loadPage() {
+    page = null;
+    if ($pagesById.has(params?.uid)) {
+      dir = $pagesById.get(params.uid);
       if (!dir.populated) {
         await dir.populate();
       }
       page = dir.pages.get(params.uid);
-      if (dir != currentDir) {
+      if (dir != $currentDirectory) {
         currentDirectory.set(dir);
-        "Now viewing directory <b>" + dir.collection.getMeta().name + "</b>";
+        toast.push(
+          "Now viewing directory <b>" + dir.collection.getMeta().name + "</b>"
+        );
       }
       if (!page.populated) {
         await page.populate();
@@ -63,9 +52,14 @@
         return us;
       });
     }
-  });
+  }
+
+  $: params.uid, loadPage();
 </script>
 
+<svelte:head>
+  <title>{page ? page.meta.name : "Etepedia"}</title>
+</svelte:head>
 <h1>{page ? page.meta.name : "Loading.."}</h1>
 <p><em>{page ? page.meta.description : "Loading.."}</em></p>
 

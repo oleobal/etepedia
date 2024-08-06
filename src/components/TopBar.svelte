@@ -1,40 +1,41 @@
 <script lang="ts">
   import { currentDirectory } from "../stores";
-  import { onDestroy } from "svelte";
-  import { Directory } from "../lib/eb";
-
-  let currentDir: Directory;
-  const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
-    async (d) => {
-      currentDir = d;
-    }
-  );
-  onDestroy(unsubscribeFromCurrentDirectory);
-
-  export let sidebarOpen = false;
+  export let leftSidebarOpen = false;
+  export let rightSidebarOpen = false;
+  let anySideBarOpen: boolean;
+  $: anySideBarOpen = leftSidebarOpen || rightSidebarOpen;
 </script>
 
-<div class="topbar" class:sidebarOpen>
+<div class="topbar" class:anySideBarOpen>
   <button
-    style="height: 42px; width: 42px; margin-right: 5px;"
-    on:click={() => (sidebarOpen = !sidebarOpen)}
-    >{sidebarOpen ? "X" : "#"}</button
+    style="height: 42px; width: 42px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
+    on:click={() => (leftSidebarOpen = !leftSidebarOpen)}
+    >{leftSidebarOpen ? "☒\uFE0E" : "☰"}</button
   >
   <div class="restofbar">
     <div style="text-wrap: nowrap; overflow-x: clip;">
-      {#if currentDir != null}
-        <a href="#/">{currentDir.collection.getMeta().name}</a>
+      {#if $currentDirectory != null}
+        <a
+          href="#/"
+          on:click={() => {
+            leftSidebarOpen = false;
+          }}>{$currentDirectory.collection.getMeta().name}</a
+        >
       {:else}
         (no directory selected)
       {/if}
     </div>
-    <div style="flex-grow: 1"></div>
-    <input placeholder="Search" />
+    <div style="flex-grow: 1;"></div>
   </div>
+  <button
+    style="height: 42px; width: 42px; margin-left: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
+    on:click={() => (rightSidebarOpen = !rightSidebarOpen)}
+    >{rightSidebarOpen ? "☒\uFE0E" : "🔎\uFE0E"}</button
+  >
 </div>
 <div
   class="filler-when-fixed"
-  style={"display:" + (sidebarOpen ? "block" : "none")}
+  style={"display:" + (anySideBarOpen ? "block" : "none")}
 >
   <!-- this is to avoid page elements shifting when the top bar switches to fixed positioning -->
 </div>
@@ -53,18 +54,20 @@
   }
 
   .restofbar {
+    min-width: 0px;
     padding: 5px;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    overflow-x: auto;
   }
 
   .filler-when-fixed {
     height: 42px;
   }
 
-  .sidebarOpen {
+  .anySideBarOpen {
     position: fixed;
     width: 100%;
 

@@ -22,6 +22,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Create directory</title>
+</svelte:head>
+
 <div
   style="
     display: flex;

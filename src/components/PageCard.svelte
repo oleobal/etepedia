@@ -1,17 +1,34 @@
 <script lang="ts">
+  import { toast } from "@zerodevx/svelte-toast";
   import { Page } from "../lib/eb";
 
   export let page: Page;
+
+  let pageLink: string;
+  $: pageLink = `#/page/${page.item.uid}`;
+
+  async function handleCopyLink() {
+    await navigator.clipboard.writeText(pageLink);
+    toast.push("Link copied to clipboard");
+  }
 </script>
 
-<a href={`#/page/${page.item.uid}`}>
-  <div class="page-card">
+<div class="outer">
+  <a href={pageLink} class="page-info">
     <h3>
       {page.meta.name}
     </h3>
     <p><em>{page.meta.description}</em></p>
+  </a>
+  <div class="buttons">
+    <button
+      class="gray-button"
+      on:click={handleCopyLink}
+      style="width: 100%;"
+      title="Copy the internal (relative) link to this page">#</button
+    >
   </div>
-</a>
+</div>
 
 <style>
   h3,
@@ -22,14 +39,24 @@
     color: var(--fg);
   }
 
-  .page-card {
+  .outer {
+    display: flex;
+
+    justify-content: stretch;
     border: 1px solid;
-    text-align: left;
-    padding: 10px;
     margin-bottom: 5px;
   }
-
-  .page-card:hover {
+  .outer:hover {
     border-color: var(--primary);
+  }
+
+  .page-info {
+    text-align: left;
+    padding: 10px;
+    flex-grow: 1;
+  }
+
+  .buttons {
+    width: 30px;
   }
 </style>
