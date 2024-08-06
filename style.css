@@ -5,9 +5,17 @@
   --primary-highlight: hsl(240, 100%, 70%);
   --primary-disabled: hsl(240, 100%, 80%);
 
-  --gray: hsl(0, 0%, 50%);
-  --gray-highlight: hsl(0, 0%, 30%);
-  --primary-disabled: hsl(0, 0%, 70%);
+  --gray: hsl(0, 0%, 90%);
+  --gray-highlight: hsl(0, 0%, 50%);
+  --gray-disabled: hsl(0, 0%, 100%);
+
+  --green: hsl(140, 100%, 30%);
+  --green-highlight: hsl(140, 100%, 40%);
+  --green-disabled: hsl(140, 20%, 50%);
+
+  --red: hsl(350, 100%, 30%);
+  --red-highlight: hsl(350, 100%, 40%);
+  --red-disabled: hsl(350, 40%, 30%);
 }
 
 .dark-colors {
@@ -17,9 +25,9 @@
   --primary-highlight: hsl(283, 100%, 45%);
   --primary-disabled: hsl(283, 100%, 20%);
 
-  --gray: hsl(0, 0%, 50%);
-  --gray-highlight: hsl(0, 0%, 70%);
-  --primary-disabled: hsl(0, 0%, 30%);
+  --gray: hsl(239, 46%, 45%);
+  --gray-highlight: hsl(239, 46%, 60%);
+  --gray-disabled: hsl(239, 46%, 25%);
 }
 
 a {
@@ -40,6 +48,7 @@ body {
 }
 
 button {
+  text-transform: lowercase;
   border-radius: 0;
   background-color: var(--primary);
   font-weight: bold;
@@ -70,10 +79,32 @@ button:disabled {
 
 .gray-button {
   background-color: var(--gray);
+  color: var(--fg);
 }
 .gray-button:hover {
   background-color: var(--primary-highlight);
+  color: white;
 }
 .gray-button:disabled {
   background-color: var(--gray-disabled);
+}
+
+.green-button {
+  background-color: var(--green);
+}
+.green-button:hover {
+  background-color: var(--green-highlight);
+}
+.green-button:disabled {
+  background-color: var(--green-disabled);
+}
+
+.red-button {
+  background-color: var(--red);
+}
+.red-button:hover {
+  background-color: var(--red-highlight);
+}
+.red-button:disabled {
+  background-color: var(--red-disabled);
 }

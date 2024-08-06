@@ -43,10 +43,10 @@
   <main>
     <Router {routes} />
   </main>
-  <SvelteToast options={{ reversed: true }} />
 {:else}
   <Login />
 {/if}
+<SvelteToast options={{ reversed: true }} />
 
 <style>
   :root {

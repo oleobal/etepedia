@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import { indexPages, listDirectories } from "./lib/eb";
 import * as Etebase from "etebase";
 import { UserSettings } from "./lib/settings";
+import { toast } from "@zerodevx/svelte-toast";
 
 export async function loadSession(ebAccount: Etebase.Account) {
   console.info("Successfully connected!");
@@ -70,4 +71,31 @@ export function logout() {
   currentDirectory.set(null);
   pagesById.set(new Map());
   push("/");
+}
+
+/* this is a workaround for these options not working in CSS */
+export const pushToast = (m) =>
+  toast.push(m, {
+    theme: {
+      "font-family": "Cantarell, sans-serif",
+      "--toastBarBackground": "var(--primary)",
+    },
+  });
+export const pushErrorToast = (m) =>
+  toast.push(m, {
+    theme: {
+      "font-family": "Cantarell, sans-serif",
+      "--toastBarBackground": "var(--red)",
+    },
+  });
+export const pushSuccessToast = (m) =>
+  toast.push(m, {
+    theme: {
+      "font-family": "Cantarell, sans-serif",
+      "--toastBarBackground": "var(--green)",
+    },
+  });
+
+export function pushDirectoryToast(dirname: string) {
+  pushToast(`Now viewing directory <b>${dirname}</b>`);
 }

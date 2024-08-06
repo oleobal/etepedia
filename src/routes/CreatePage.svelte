@@ -1,11 +1,10 @@
 <script lang="ts">
   import { currentDirectory } from "../stores";
-  import { Directory, Page } from "../lib/eb";
+  import { Page } from "../lib/eb";
   import { push } from "svelte-spa-router";
-  import { onDestroy } from "svelte";
-  import { toast } from "@zerodevx/svelte-toast";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
+  import { pushSuccessToast } from "../nav";
 
   let name: string;
   let description: string;
@@ -27,7 +26,7 @@
 
     await $currentDirectory.uploadPage(page);
 
-    toast.push("Page created");
+    pushSuccessToast("Page created");
     push(`/page/${page.item.uid}`);
   }
 </script>

@@ -1,15 +1,13 @@
 <script lang="ts">
   import { currentDirectory, pagesById, userSettings } from "../stores";
   import { Directory, Page } from "../lib/eb";
-  import { parse } from "marked";
-  import DOMPurify from "dompurify";
-  import { toast } from "@zerodevx/svelte-toast";
+  import PageViewer from "../components/PageViewer.svelte";
+  import { pushDirectoryToast } from "../nav";
 
   export let params: { uid: string } = { uid: "" };
 
   var page: Page;
   var dir: Directory;
-  var text: string | null = null;
 
   async function loadPage() {
     page = null;
@@ -21,14 +19,8 @@
       page = dir.pages.get(params.uid);
       if (dir != $currentDirectory) {
         currentDirectory.set(dir);
-        toast.push(
-          "Now viewing directory <b>" + dir.collection.getMeta().name + "</b>"
-        );
+        pushDirectoryToast(dir.collection.getMeta().name);
       }
-      if (!page.populated) {
-        await page.populate();
-      }
-      text = page.content.article;
 
       userSettings.update((us) => {
         if (!us.latestPageViewsByDirectory[dir.collection.uid]) {
@@ -60,21 +52,5 @@
 <svelte:head>
   <title>{page ? page.meta.name : "Etepedia"}</title>
 </svelte:head>
-<h1>{page ? page.meta.name : "Loading.."}</h1>
-<p><em>{page ? page.meta.description : "Loading.."}</em></p>
 
-<hr />
-
-<div class="page-text">
-  {#if text}
-    {@html DOMPurify.sanitize(parse(text))}
-  {:else}
-    <p>Loading..</p>
-  {/if}
-</div>
-
-<style>
-  .page-text {
-    text-align: left;
-  }
-</style>
+<PageViewer {page} />

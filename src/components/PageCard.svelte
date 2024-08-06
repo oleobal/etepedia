@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { toast } from "@zerodevx/svelte-toast";
   import { Page } from "../lib/eb";
+  import { pushToast } from "../nav";
 
   export let page: Page;
 
@@ -9,7 +9,7 @@
 
   async function handleCopyLink() {
     await navigator.clipboard.writeText(pageLink);
-    toast.push("Link copied to clipboard");
+    pushToast("Link copied to clipboard");
   }
 </script>
 

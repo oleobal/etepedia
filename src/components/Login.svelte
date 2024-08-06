@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Etebase from "etebase";
   import { savedEtebaseSession } from "../stores";
-  import { loadSession } from "../nav";
+  import { loadSession, pushErrorToast, pushToast } from "../nav";
 
   let loginInProgress = false;
   let username: string;
@@ -9,6 +9,7 @@
   let endpoint: string;
 
   async function handleLogin() {
+    pushToast("Logging into Etebase");
     console.info("Logging into Etebase..");
     loginInProgress = true;
     try {
@@ -22,25 +23,15 @@
 
       await loadSession(ebAccount);
     } catch (error) {
+      pushErrorToast("Couldn't log in");
       loginInProgress = false;
       console.error(error);
     }
   }
 </script>
 
-<div
-  id="login_form"
-  style="
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      max-width: 300px;
-      margin-right: auto;
-      margin-left: auto;
-      "
->
-  <h1 style="margin-bottom: 0;">Log in</h1>
+<div id="login">
+  <h1 style="margin: 0;">Log in</h1>
   <i>Use your Etebase credentials</i>
   <input
     style="width: 100%"
@@ -59,4 +50,21 @@
     bind:value={endpoint}
   />
   <button on:click={handleLogin} disabled={loginInProgress}>Log in</button>
+  <div style="margin-bottom:5vh">
+    <!-- this is to compensate for the empty space above the h1 -->
+  </div>
 </div>
+
+<style>
+  #login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    max-width: 300px;
+    height: 100vh;
+    margin-right: auto;
+    margin-left: auto;
+    justify-content: center;
+  }
+</style>

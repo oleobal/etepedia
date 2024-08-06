@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Directory } from "../lib/eb";
+  import { pushDirectoryToast } from "../nav";
   import { currentDirectory } from "../stores";
-  import { toast } from "@zerodevx/svelte-toast";
   import { push } from "svelte-spa-router";
   export let directory: Directory;
 
@@ -15,9 +15,7 @@
   function selectDirectory() {
     currentDirectory.set(directory);
     push("/");
-    toast.push(
-      "Now viewing directory <b>" + directory.collection.getMeta().name + "</b>"
-    );
+    pushDirectoryToast(directory.collection.getMeta().name);
   }
 </script>
 
@@ -27,7 +25,7 @@
   disabled={isCurrent}
   class:isCurrent
 >
-  {#if isCurrent}<div class="current-marker">Currently<br />viewing</div>{/if}
+  {#if isCurrent}<div class="current-marker">currently<br />viewing</div>{/if}
   <div class="inside">
     <div
       style="flex: 1 1; overflow-x: auto; text-wrap: nowrap; min-width: 50px;"
