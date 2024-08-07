@@ -18,7 +18,7 @@
     <h3>
       {page.meta.name}
     </h3>
-    <p><em>{page.meta.description}</em></p>
+    <p><em>{page.meta.description ? page.meta.description : "—"}</em></p>
   </a>
   <div class="buttons">
     <button

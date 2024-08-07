@@ -10,9 +10,9 @@
   let recentPages: string[];
 
   $: recentPages = $userSettings.latestPageViewsByDirectory[
-    currentDir.collection.uid
+    currentDir?.collection?.uid
   ]
-    ? $userSettings.latestPageViewsByDirectory[currentDir.collection.uid]
+    ? $userSettings.latestPageViewsByDirectory[currentDir?.collection?.uid]
         .slice(-6)
         .reverse()
     : [];
@@ -23,6 +23,9 @@
     async (d) => {
       currentDir = d;
       pages = null;
+      if (!currentDir) {
+        return;
+      }
       await currentDir.update();
       if (!currentDir.populated) {
         await currentDir.populate();
@@ -33,6 +36,9 @@
   onDestroy(unsubscribeFromCurrentDirectory);
 
   onMount(async () => {
+    if (!currentDir) {
+      return;
+    }
     await currentDir.update();
     if (!currentDir.populated) {
       await currentDir.populate();
@@ -42,7 +48,7 @@
 </script>
 
 <svelte:head>
-  <title>{$currentDirectory.meta.name}</title>
+  <title>{$currentDirectory ? $currentDirectory.meta.name : "Etepedia"}</title>
 </svelte:head>
 
 {#if $directoriesById.size == 0}No directories; <a href="#/create-directory"

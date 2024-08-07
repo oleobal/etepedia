@@ -32,7 +32,7 @@
         {directory.meta.name}
       </h3>
       <p>
-        <em>{directory.meta.description}</em>
+        <em>{directory.meta.description ? directory.meta.description : "—"}</em>
       </p>
     </div>
     <div

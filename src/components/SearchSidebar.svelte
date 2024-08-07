@@ -59,8 +59,11 @@
 
       pagesToSearch = dirs.flatMap((dir) => Array.from(dir.pages.values()));
     } else {
-      if (!$currentDirectory.populated) await $currentDirectory.populate();
-      pagesToSearch = Array.from($currentDirectory.pages.values());
+      if ($currentDirectory) {
+        if (!$currentDirectory.populated) await $currentDirectory.populate();
+        pagesToSearch = Array.from($currentDirectory.pages.values());
+      }
+      pagesToSearch = [];
     }
   }
 
