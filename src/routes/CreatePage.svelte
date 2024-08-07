@@ -22,7 +22,7 @@
     let page = new Page();
     page.meta.name = name;
     page.meta.description = description;
-    page.content.article = text;
+    page.content.text = text;
 
     await $currentDirectory.uploadPage(page);
 
@@ -36,7 +36,7 @@
 </svelte:head>
 
 <div>
-  <h1>Create page on {$currentDirectory.collection.getMeta().name}</h1>
+  <h1>Create page on {$currentDirectory.meta.name}</h1>
   <div class="form">
     <div class="max-width">
       <input

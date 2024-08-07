@@ -17,9 +17,7 @@ export interface CollectionInfo {
 }
 
 export interface Page {
-  article: string;
-  /** ids of groups this belongs to */
-  groups: string[];
+  text?: string | undefined;
 }
 
 export interface Group {
@@ -103,16 +101,13 @@ export const CollectionInfo = {
 };
 
 function createBasePage(): Page {
-  return { article: "", groups: [] };
+  return { text: undefined };
 }
 
 export const Page = {
   encode(message: Page, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.article !== "") {
-      writer.uint32(10).string(message.article);
-    }
-    for (const v of message.groups) {
-      writer.uint32(18).string(v!);
+    if (message.text !== undefined) {
+      writer.uint32(10).string(message.text);
     }
     return writer;
   },
@@ -129,14 +124,7 @@ export const Page = {
             break;
           }
 
-          message.article = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.groups.push(reader.string());
+          message.text = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -148,19 +136,13 @@ export const Page = {
   },
 
   fromJSON(object: any): Page {
-    return {
-      article: isSet(object.article) ? globalThis.String(object.article) : "",
-      groups: globalThis.Array.isArray(object?.groups) ? object.groups.map((e: any) => globalThis.String(e)) : [],
-    };
+    return { text: isSet(object.text) ? globalThis.String(object.text) : undefined };
   },
 
   toJSON(message: Page): unknown {
     const obj: any = {};
-    if (message.article !== "") {
-      obj.article = message.article;
-    }
-    if (message.groups?.length) {
-      obj.groups = message.groups;
+    if (message.text !== undefined) {
+      obj.text = message.text;
     }
     return obj;
   },
@@ -170,8 +152,7 @@ export const Page = {
   },
   fromPartial<I extends Exact<DeepPartial<Page>, I>>(object: I): Page {
     const message = createBasePage();
-    message.article = object.article ?? "";
-    message.groups = object.groups?.map((e) => e) || [];
+    message.text = object.text ?? undefined;
     return message;
   },
 };

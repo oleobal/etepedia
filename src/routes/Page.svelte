@@ -19,7 +19,7 @@
       page = dir.pages.get(params.uid);
       if (dir != $currentDirectory) {
         currentDirectory.set(dir);
-        pushDirectoryToast(dir.collection.getMeta().name);
+        pushDirectoryToast(dir.meta.name);
       }
 
       userSettings.update((us) => {

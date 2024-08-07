@@ -23,7 +23,7 @@
   async function loadText() {
     if (page && !page.populated) {
       await page.populate();
-      text = page.content.article;
+      text = page.content.text;
     }
   }
 
@@ -43,7 +43,7 @@
 
   async function saveEdits() {
     pushToast("Upload started");
-    page.content.article = newText;
+    page.content.text = newText;
     page.meta.description = newDesc;
     page.meta.name = newTitle;
     await $currentDirectory.uploadPage(page);
@@ -55,7 +55,7 @@
   $: editingStarted = editing || editingStarted;
   $: title = page ? page.meta.name : null;
   $: desc = page ? page.meta.description : null;
-  $: text = page && page.populated ? page.content.article : null;
+  $: text = page && page.populated ? page.content.text : null;
 </script>
 
 <h1>

@@ -19,7 +19,7 @@
           href="#/"
           on:click={() => {
             leftSidebarOpen = false;
-          }}>{$currentDirectory.collection.getMeta().name}</a
+          }}>{$currentDirectory.meta.name}</a
         >
       {:else}
         (no directory selected)

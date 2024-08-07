@@ -10,12 +10,10 @@
   let isCurrent: boolean;
   $: isCurrent = directory === $currentDirectory;
 
-  let meta = directory.collection.getMeta();
-
   function selectDirectory() {
     currentDirectory.set(directory);
     push("/");
-    pushDirectoryToast(directory.collection.getMeta().name);
+    pushDirectoryToast(directory.meta.name);
   }
 </script>
 
@@ -31,10 +29,10 @@
       style="flex: 1 1; overflow-x: auto; text-wrap: nowrap; min-width: 50px;"
     >
       <h3>
-        {meta.name}
+        {directory.meta.name}
       </h3>
       <p>
-        <em>{meta.description}</em>
+        <em>{directory.meta.description}</em>
       </p>
     </div>
     <div

@@ -42,14 +42,14 @@
 </script>
 
 <svelte:head>
-  <title>{$currentDirectory.collection.getMeta().name}</title>
+  <title>{$currentDirectory.meta.name}</title>
 </svelte:head>
 
 {#if $directoriesById.size == 0}No directories; <a href="#/create-directory"
     ><button>create one</button></a
   >
 {:else}
-  <h1>Pages in {currentDir.collection.getMeta().name}</h1>
+  <h1>Pages in {currentDir.meta.name}</h1>
   <div style="text-align: left;">
     {#if !pages}
       <p>Populating..</p>

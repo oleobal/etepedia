@@ -63,10 +63,12 @@ export class Directory {
   pages: Map<PageID, Page> = new Map();
   populated: boolean = false;
 
-  collectionManager: Etebase.CollectionManager;
   collection: Etebase.Collection;
-  itemManager: Etebase.ItemManager;
   collectionInfo: Protobuf.CollectionInfo;
+  meta: Etebase.ItemMetadata;
+
+  collectionManager: Etebase.CollectionManager;
+  itemManager: Etebase.ItemManager;
 
   static async Create(
     collectionManager: Etebase.CollectionManager,
@@ -83,6 +85,7 @@ export class Directory {
     );
     await me.collectionManager.upload(me.collection);
     me.itemManager = me.collectionManager.getItemManager(me.collection);
+    me.meta = me.collection.getMeta();
 
     return me;
   }
@@ -105,6 +108,7 @@ export class Directory {
     this.collection = await this.collectionManager.fetch(this.collection.uid, {
       stoken,
     });
+    this.meta = this.collection.getMeta();
     this.collectionInfo = Protobuf.CollectionInfo.decode(
       await this.collection.getContent(Etebase.OutputFormat.Uint8Array)
     );
@@ -143,9 +147,6 @@ export class Directory {
       page.item = await this.itemManager.create(metadata, content);
       this.collectionInfo.pages.push(page.item.uid);
       this.pages[page.item.uid] = page;
-    }
-    if (page.content.groups && page.content.groups.length != 0) {
-      // TODO
     }
     await this.collection.setContent(
       Protobuf.CollectionInfo.encode(this.collectionInfo).finish()

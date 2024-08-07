@@ -6,8 +6,7 @@ message CollectionInfo {
 }
 
 message Page {
-  string article = 1;
-  repeated string groups = 2; // ids of groups this belongs to
+  string text = 1;
 }
 
 message Group {

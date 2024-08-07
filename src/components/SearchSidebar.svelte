@@ -27,7 +27,7 @@
         if (!page.populated) {
           await page.populate();
         }
-        if (normalize(page.content.article).includes(query)) {
+        if (normalize(page.content.text).includes(query)) {
           resultsByTier[2].push(page);
         }
       }
