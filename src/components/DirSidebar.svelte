@@ -51,6 +51,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    overflow-y: auto;
   }
 
   aside {

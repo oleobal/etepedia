@@ -154,6 +154,7 @@
     flex-direction: column;
     align-items: stretch;
     flex-grow: 1;
+    overflow-y: auto;
   }
 
   .inside {

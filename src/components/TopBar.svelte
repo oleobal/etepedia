@@ -10,8 +10,12 @@
   <button
     style="height: 42px; width: 42px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
     on:click={() => (leftSidebarOpen = !leftSidebarOpen)}
-    >{leftSidebarOpen ? "☒\uFE0E" : "☰"}</button
-  >
+    >{#if leftSidebarOpen}
+      <img src="/static/close-cross.svg" alt="close list of directories" />
+    {:else}
+      <img src="/static/list.svg" alt="open list of directories" />
+    {/if}
+  </button>
   <div class="restofbar">
     <div style="text-wrap: nowrap; overflow-x: clip;">
       {#if $currentDirectory != null}
@@ -30,7 +34,11 @@
   <button
     style="height: 42px; width: 42px; margin-left: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
     on:click={() => (rightSidebarOpen = !rightSidebarOpen)}
-    >{rightSidebarOpen ? "☒\uFE0E" : "🔎\uFE0E"}</button
+    >{#if rightSidebarOpen}
+      <img src="/static/close-cross.svg" alt="close search menu" />
+    {:else}
+      <img src="/static/magnifying-glass.svg" alt="open search menu" />
+    {/if}</button
   >
 </div>
 <div
