@@ -9,7 +9,8 @@
     "moduleResolution": "bundler",
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "vite.config.ts"]
 }

@@ -82,9 +82,8 @@
       <button on:click={switchPreview}
         >{previewing ? "Switch to edit" : "Switch to preview"}</button
       >
-      <button
-        on:click={handleCreation}
-        disabled={!(name && description && text) || creating}>Create</button
+      <button on:click={handleCreation} disabled={!name || creating}
+        >Create</button
       >
     </div>
   </div>

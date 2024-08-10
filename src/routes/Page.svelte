@@ -2,8 +2,6 @@
   import { currentDirectory, pagesById, userSettings } from "../stores";
   import { Directory, Page } from "../lib/eb";
   import PageViewer from "../components/PageViewer.svelte";
-  import { pushDirectoryToast } from "../nav";
-  import { onMount } from "svelte";
 
   export let params: { uid: string } = { uid: "" };
 
@@ -20,7 +18,6 @@
       page = dir.pages.get(params.uid);
       if (dir != $currentDirectory) {
         currentDirectory.set(dir);
-        pushDirectoryToast(dir.meta.name);
       }
 
       userSettings.update((us) => {

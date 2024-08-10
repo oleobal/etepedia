@@ -2,8 +2,8 @@
   import Router from "svelte-spa-router";
   import TopBar from "./components/TopBar.svelte";
   import routes from "./routes";
-  import { SvelteToast } from "@zerodevx/svelte-toast";
-  import { restoreSavedSession } from "./nav";
+  import { SvelteToast, toast } from "@zerodevx/svelte-toast";
+  import { pushToast, restoreSavedSession } from "./nav";
   import { onDestroy, onMount } from "svelte";
   import Login from "./components/Login.svelte";
   import { etebaseAccount, userSettings, currentDirectory } from "./stores";
@@ -26,6 +26,7 @@
           userSetts.currentDirectory = currentDir?.collection?.uid;
           return userSetts;
         });
+        pushToast(`Now viewing directory <b>${currentDir.meta.name}</b>`);
       }
     }
   );

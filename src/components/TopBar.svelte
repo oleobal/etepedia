@@ -1,5 +1,10 @@
 <script lang="ts">
+  import closeCrossIconUrl from "../../static/close-cross.svg";
+  import listIconUrl from "../../static/list.svg";
+  import magnifyingGlassIconUrl from "../../static/magnifying-glass.svg";
+
   import { currentDirectory } from "../stores";
+
   export let leftSidebarOpen = false;
   export let rightSidebarOpen = false;
   let anySideBarOpen: boolean;
@@ -11,9 +16,9 @@
     style="height: 42px; width: 42px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
     on:click={() => (leftSidebarOpen = !leftSidebarOpen)}
     >{#if leftSidebarOpen}
-      <img src="/static/close-cross.svg" alt="close list of directories" />
+      <img src={closeCrossIconUrl} alt="close list of directories" />
     {:else}
-      <img src="/static/list.svg" alt="open list of directories" />
+      <img src={listIconUrl} alt="open list of directories" />
     {/if}
   </button>
   <div class="restofbar">
@@ -35,9 +40,9 @@
     style="height: 42px; width: 42px; margin-left: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
     on:click={() => (rightSidebarOpen = !rightSidebarOpen)}
     >{#if rightSidebarOpen}
-      <img src="/static/close-cross.svg" alt="close search menu" />
+      <img src={closeCrossIconUrl} alt="close search menu" />
     {:else}
-      <img src="/static/magnifying-glass.svg" alt="open search menu" />
+      <img src={magnifyingGlassIconUrl} alt="open search menu" />
     {/if}</button
   >
 </div>

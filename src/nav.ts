@@ -12,6 +12,7 @@ import { indexPages, listDirectories } from "./lib/eb";
 import * as Etebase from "etebase";
 import { UserSettings } from "./lib/settings";
 import { toast } from "@zerodevx/svelte-toast";
+import { mergeDeep as deeplyMerge } from "./lib/util";
 
 export async function loadSession(ebAccount: Etebase.Account) {
   console.info("Successfully connected!");
@@ -75,25 +76,27 @@ export function logout() {
 
 /* this is a workaround for these options not working in CSS */
 
-export function pushToast(
-  message: string,
-  theme: { [key: string]: string } = {}
-) {
-  const defaultTheme = {
-    "font-family": "Cantarell, sans-serif",
-    "--toastBarBackground": "var(--primary)",
+export function pushToast(message: string, options: object = {}) {
+  const defaultOptions = {
+    theme: {
+      "font-family": "Cantarell, sans-serif",
+      "--toastBarBackground": "var(--primary)",
+      "--toastBackground": "var(--gray)",
+      "--toastColor": "var(--fg)",
+    },
   };
-  const t = { ...defaultTheme, ...theme };
-  toast.push(message, { theme: t });
+  return toast.push(message, deeplyMerge(defaultOptions, options));
 }
 
-export function pushErrorToast(message: string) {
-  pushToast(message, { "--toastBarBackground": "var(--red)" });
+export function pushErrorToast(message: string, options: object = {}) {
+  return pushToast(
+    message,
+    deeplyMerge({ theme: { "--toastBarBackground": "var(--red)" } }, options)
+  );
 }
-export function pushSuccessToast(message: string) {
-  pushToast(message, { "--toastBarBackground": "var(--green)" });
-}
-
-export function pushDirectoryToast(dirname: string) {
-  pushToast(`Now viewing directory <b>${dirname}</b>`);
+export function pushSuccessToast(message: string, options: object = {}) {
+  return pushToast(
+    message,
+    deeplyMerge({ theme: { "--toastBarBackground": "var(--green)" } }, options)
+  );
 }

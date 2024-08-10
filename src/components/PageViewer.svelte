@@ -1,11 +1,10 @@
 <script lang="ts">
   import { currentDirectory } from "../stores";
-  import { Directory, Page } from "../lib/eb";
+  import { Page } from "../lib/eb";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
-  import { pushToast, pushSuccessToast } from "../nav";
-  import PageViewer from "../components/PageViewer.svelte";
-  import App from "../App.svelte";
+  import { pushToast, pushSuccessToast, pushErrorToast } from "../nav";
+  import { toast } from "@zerodevx/svelte-toast";
 
   export let page: Page;
 
@@ -42,12 +41,19 @@
   }
 
   async function saveEdits() {
-    pushToast("Upload started");
+    const toastId = pushToast("Upload started");
     page.content.text = newText;
     page.meta.description = newDesc;
     page.meta.name = newTitle;
-    await $currentDirectory.uploadPage(page);
-    pushSuccessToast("Page saved");
+    try {
+      await $currentDirectory.uploadPage(page);
+      toast.pop(toastId);
+      pushSuccessToast("Page saved");
+    } catch (error) {
+      console.log(error);
+      toast.pop(toastId);
+      pushErrorToast("Couldn't save edits");
+    }
     cancelEditing();
   }
 
@@ -72,7 +78,13 @@
 
 <div class="description">
   <em class={editing ? "invisible" : ""}
-    >{newDesc ? newDesc : desc ? desc : "loading.."}</em
+    >{newDesc
+      ? newDesc
+      : desc
+        ? desc
+        : desc === ""
+          ? "No description"
+          : "loading.."}</em
   >
   <textarea
     style="font-size: inherit; width: 100%; box-sizing: border-box;"
@@ -102,11 +114,16 @@
   <button class="gray-button" disabled>Revisions</button>
 </div>
 
-<div class={editing ? "invisible" : ""} style="text-align: left">
+<div
+  class={editing ? "invisible" : ""}
+  style={"text-align: " + (newText || text ? "left" : "center")}
+>
   {#if newText}
     {@html DOMPurify.sanitize(parse(newText))}
   {:else if text}
     {@html DOMPurify.sanitize(parse(text))}
+  {:else if text === ""}
+    <em style="text-align: center">No text</em>
   {:else}
     <p>loading..</p>
   {/if}

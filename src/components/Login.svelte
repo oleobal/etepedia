@@ -1,7 +1,13 @@
 <script lang="ts">
   import * as Etebase from "etebase";
   import { savedEtebaseSession } from "../stores";
-  import { loadSession, pushErrorToast, pushToast } from "../nav";
+  import {
+    loadSession,
+    pushErrorToast,
+    pushSuccessToast,
+    pushToast,
+  } from "../nav";
+  import { toast } from "@zerodevx/svelte-toast";
 
   let loginInProgress = false;
   let username: string;
@@ -10,7 +16,10 @@
 
   async function handleLogin() {
     console.info("Logging into Etebase..");
-    pushToast("Logging into Etebase..", { "--toastBarHeight": "0px" });
+    const toastId = pushToast("Logging into Etebase..", {
+      initial: 0,
+      theme: { "--toastBarHeight": "0px" },
+    });
     loginInProgress = true;
     try {
       const ebAccount = await Etebase.Account.login(
@@ -22,10 +31,17 @@
       savedEtebaseSession.set(savedSession);
 
       await loadSession(ebAccount);
+      toast.pop(toastId);
+      pushSuccessToast(`Logged in as <b>${username}</b>`);
     } catch (error) {
-      pushErrorToast("Couldn't log in");
+      toast.pop(toastId);
       loginInProgress = false;
       console.error(error);
+      if (error instanceof Etebase.UnauthorizedError) {
+        pushErrorToast(`Couldn't log in: <b>${error.message}</b>`);
+      } else {
+        pushErrorToast("Couldn't log in");
+      }
     }
   }
 </script>

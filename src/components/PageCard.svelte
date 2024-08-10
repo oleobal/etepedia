@@ -18,13 +18,15 @@
     <h3>
       {page.meta.name}
     </h3>
-    <p><em>{page.meta.description ? page.meta.description : "—"}</em></p>
+    {#if page.meta.description}
+      <em>{page.meta.description}</em>
+    {/if}
   </a>
   <div class="buttons">
     <button
       class="gray-button"
       on:click={handleCopyLink}
-      style="width: 100%;"
+      style={"width: 100%;" + (page.meta.description ? "" : "height: 100%;")}
       title="Copy the internal (relative) link to this page">#</button
     >
   </div>
@@ -58,5 +60,6 @@
 
   .buttons {
     width: 30px;
+    min-width: 30px;
   }
 </style>

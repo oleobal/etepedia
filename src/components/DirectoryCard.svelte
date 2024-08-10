@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Directory } from "../lib/eb";
-  import { pushDirectoryToast } from "../nav";
   import { currentDirectory } from "../stores";
   import { push } from "svelte-spa-router";
   export let directory: Directory;
@@ -13,7 +12,6 @@
   function selectDirectory() {
     currentDirectory.set(directory);
     push("/");
-    pushDirectoryToast(directory.meta.name);
   }
 </script>
 
@@ -25,19 +23,15 @@
 >
   {#if isCurrent}<div class="current-marker">currently<br />viewing</div>{/if}
   <div class="inside">
-    <div
-      style="flex: 1 1; overflow-x: auto; text-wrap: nowrap; min-width: 50px;"
-    >
+    <div class="info">
       <h3>
         {directory.meta.name}
       </h3>
-      <p>
-        <em>{directory.meta.description ? directory.meta.description : "—"}</em>
-      </p>
+      {#if directory.meta.description}
+        <em>{directory.meta.description}</em>
+      {/if}
     </div>
-    <div
-      style="margin: 0 15px; display:flex; align-items: center; margin-right: 0;"
-    >
+    <div class="page-count">
       {nbPages === 0
         ? "No pages"
         : nbPages + " " + (nbPages === 1 ? "page" : "pages")}
@@ -74,6 +68,21 @@
     align-items: stretch;
     min-width: 50px;
     flex-grow: 1;
+  }
+
+  .info {
+    flex: 1 1;
+    overflow-x: auto;
+    text-wrap: nowrap;
+    min-width: 50px;
+    align-items: center;
+  }
+
+  .page-count {
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    margin-right: 0;
   }
 
   .is-current {

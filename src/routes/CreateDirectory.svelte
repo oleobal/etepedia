@@ -6,10 +6,12 @@
 
   let name: string;
   let description: string;
+  let creating = false;
 
   let ebAccount = get(etebaseAccount);
 
   async function handleCreation() {
+    creating = true;
     let newDir = await Directory.Create(ebAccount.getCollectionManager(), {
       name: name,
       description: description,
@@ -18,6 +20,7 @@
     let dirs = await listDirectories(ebAccount);
     directoriesById.set(dirs);
     currentDirectory.set(newDir);
+    creating = false;
     replace("/");
   }
 </script>
@@ -44,5 +47,5 @@
     placeholder="Description"
     bind:value={description}
   />
-  <button on:click={handleCreation}>Create</button>
+  <button on:click={handleCreation} disabled={!name || creating}>Create</button>
 </div>
