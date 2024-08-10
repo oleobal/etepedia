@@ -3,6 +3,7 @@
   import { Directory, Page } from "../lib/eb";
   import PageViewer from "../components/PageViewer.svelte";
   import { pushDirectoryToast } from "../nav";
+  import { onMount } from "svelte";
 
   export let params: { uid: string } = { uid: "" };
 

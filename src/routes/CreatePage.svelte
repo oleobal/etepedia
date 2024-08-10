@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentDirectory } from "../stores";
+  import { currentDirectory, pagesById } from "../stores";
   import { Page } from "../lib/eb";
   import { push } from "svelte-spa-router";
   import { parse } from "marked";
@@ -25,6 +25,7 @@
     page.content.text = text;
 
     await $currentDirectory.uploadPage(page);
+    $pagesById.set(page.item.uid, $currentDirectory);
 
     pushSuccessToast("Page created");
     push(`/page/${page.item.uid}`);

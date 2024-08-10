@@ -82,9 +82,9 @@
   .current-marker {
     background-color: var(--primary);
     color: var(--bg);
-    font-family: var(--accent-font);
+    font-family: var(--ui-font);
     font-weight: bold;
-    font-size: 90%;
+    font-size: var(--ui-font-size);
     text-align: center;
     padding: 0 5px;
     display: flex;

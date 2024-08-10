@@ -146,7 +146,7 @@ export class Directory {
     } else {
       page.item = await this.itemManager.create(metadata, content);
       this.collectionInfo.pages.push(page.item.uid);
-      this.pages[page.item.uid] = page;
+      this.pages.set(page.item.uid, page);
     }
     await this.collection.setContent(
       Protobuf.CollectionInfo.encode(this.collectionInfo).finish()

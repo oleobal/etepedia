@@ -74,27 +74,25 @@ export function logout() {
 }
 
 /* this is a workaround for these options not working in CSS */
-export const pushToast = (m) =>
-  toast.push(m, {
-    theme: {
-      "font-family": "Cantarell, sans-serif",
-      "--toastBarBackground": "var(--primary)",
-    },
-  });
-export const pushErrorToast = (m) =>
-  toast.push(m, {
-    theme: {
-      "font-family": "Cantarell, sans-serif",
-      "--toastBarBackground": "var(--red)",
-    },
-  });
-export const pushSuccessToast = (m) =>
-  toast.push(m, {
-    theme: {
-      "font-family": "Cantarell, sans-serif",
-      "--toastBarBackground": "var(--green)",
-    },
-  });
+
+export function pushToast(
+  message: string,
+  theme: { [key: string]: string } = {}
+) {
+  const defaultTheme = {
+    "font-family": "Cantarell, sans-serif",
+    "--toastBarBackground": "var(--primary)",
+  };
+  const t = { ...defaultTheme, ...theme };
+  toast.push(message, { theme: t });
+}
+
+export function pushErrorToast(message: string) {
+  pushToast(message, { "--toastBarBackground": "var(--red)" });
+}
+export function pushSuccessToast(message: string) {
+  pushToast(message, { "--toastBarBackground": "var(--green)" });
+}
 
 export function pushDirectoryToast(dirname: string) {
   pushToast(`Now viewing directory <b>${dirname}</b>`);

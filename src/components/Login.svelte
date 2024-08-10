@@ -9,8 +9,8 @@
   let endpoint: string;
 
   async function handleLogin() {
-    pushToast("Logging into Etebase");
     console.info("Logging into Etebase..");
+    pushToast("Logging into Etebase..", { "--toastBarHeight": "0px" });
     loginInProgress = true;
     try {
       const ebAccount = await Etebase.Account.login(

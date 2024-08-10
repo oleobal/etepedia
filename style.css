@@ -43,8 +43,9 @@ body {
   background-color: var(--bg);
   color: var(--fg);
   border-color: var(--fg);
-  --accent-font: "Cantarell", "sans-serif";
-  --text-font: "serif";
+  --ui-font: Cantarell, sans-serif;
+  --ui-font-size: 13.5px;
+  --text-font: serif;
 }
 
 button {
@@ -52,6 +53,7 @@ button {
   border-radius: 0;
   background-color: var(--primary);
   font-weight: bold;
+  font-size: var(--ui-font-size);
   color: white;
   border: none;
   /*

@@ -21,7 +21,7 @@
       <a href="#/create-directory"><button>New directory</button></a>
     {/if}
     <div style="flex-grow: 1"></div>
-    <div style="font-family: var(--accent-font)">
+    <div style="font-family: var(--ui-font)">
       Logged in as <b>{$etebaseAccount.user.username}</b>.
       <a
         href="#/settings"
