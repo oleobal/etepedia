@@ -61,7 +61,9 @@
   $: editingStarted = editing || editingStarted;
   $: title = page ? page.meta.name : null;
   $: desc = page ? page.meta.description : null;
+  $: pageHasDesc = page?.meta?.description ? true : false;
   $: text = page && page.populated ? page.content.text : null;
+  $: pageHasText = page && page.populated && page?.content?.text ? true : false;
 </script>
 
 <h1>
@@ -82,9 +84,9 @@
       ? newDesc
       : desc
         ? desc
-        : desc === ""
-          ? "No description"
-          : "loading.."}</em
+        : pageHasDesc
+          ? "loading.."
+          : "No description"}</em
   >
   <textarea
     style="font-size: inherit; width: 100%; box-sizing: border-box;"
@@ -122,7 +124,7 @@
     {@html DOMPurify.sanitize(parse(newText))}
   {:else if text}
     {@html DOMPurify.sanitize(parse(text))}
-  {:else if text === ""}
+  {:else if !pageHasText}
     <em style="text-align: center">No text</em>
   {:else}
     <p>loading..</p>

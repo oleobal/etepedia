@@ -50,6 +50,7 @@
   }
   .outer:hover {
     border-color: var(--primary);
+    box-shadow: 0 0 3px var(--primary);
   }
 
   .page-info {

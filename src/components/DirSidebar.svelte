@@ -52,6 +52,9 @@
     flex-direction: column;
     align-items: stretch;
     overflow-y: auto;
+    padding: 5px; /* padding here and not to the aside element so as not to clip box-shadows */
+    box-sizing: border-box;
+    margin-bottom: 5px;
   }
 
   aside {
@@ -62,7 +65,6 @@
     width: 500px;
     top: 42px;
     height: 100%;
-    padding: 0 5px;
     box-sizing: border-box;
 
     border-right: solid 1px;

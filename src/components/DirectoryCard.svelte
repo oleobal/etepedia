@@ -50,15 +50,20 @@
     display: flex;
     text-align: left;
     border: solid 1px;
-    margin-bottom: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 1px;
     overflow-x: clip;
   }
   .directory-card:hover {
     border-color: var(--primary);
+    box-shadow: 0 0 3px var(--primary);
     cursor: pointer;
   }
   .isCurrent:hover {
     cursor: default;
+    box-shadow: none;
+    border-color: var(--fg);
   }
 
   .inside {
@@ -86,10 +91,14 @@
   }
 
   .is-current {
-    border-color: var(--primary);
+    border-width: 2px 2px 2px 0px;
+    /* reduce margins to compensate for border width being 1px heavier */
+    margin-top: 1px;
+    margin-right: 0;
+    margin-bottom: 1px;
   }
   .current-marker {
-    background-color: var(--primary);
+    background-color: var(--fg);
     color: var(--bg);
     font-family: var(--ui-font);
     font-weight: bold;

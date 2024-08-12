@@ -1,11 +1,9 @@
 <script lang="ts">
   import { currentDirectory, directoriesById } from "../stores";
-  import { onMount } from "svelte";
   import { Page } from "../lib/eb";
   import PageCard from "./PageCard.svelte";
 
   export let sidebarOpen = false;
-
   function normalize(s: string): string {
     return s.normalize().toLowerCase();
   }
@@ -68,10 +66,10 @@
     }
   }
 
-  onMount(adjustPagesToSearch);
-
   let searchQuery: string = "";
   $: searchQuery, handleSearch();
+  $: $currentDirectory, adjustPagesToSearch();
+  $: pagesToSearch, handleSearch();
 
   let pagesToSearch: Page[];
   let searchMetaOnly: boolean = true;
@@ -82,7 +80,7 @@
 <aside class:sidebarOpen>
   <div class="inside">
     <div class="top">
-      <h1 style="font-size: 19px;">Search</h1>
+      <h1 style="font-size: 19px">Search</h1>
       <div class="settings">
         <div>
           <input
@@ -137,6 +135,7 @@
 
 <style>
   .settings {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -145,8 +144,9 @@
   .top {
     display: flex;
     flex-direction: column;
+    padding: 5px; /* padding here and not to the aside element so as not to clip box-shadows */
 
-    align-items: stretch;
+    align-items: center;
   }
   .results {
     width: 100%;
@@ -155,6 +155,8 @@
     align-items: stretch;
     flex-grow: 1;
     overflow-y: auto;
+    padding: 5px; /* padding here and not to the aside element so as not to clip box-shadows */
+    box-sizing: border-box;
   }
 
   .inside {
@@ -173,7 +175,6 @@
     width: 500px;
     top: 42px;
     height: 100%;
-    padding: 0 5px;
     box-sizing: border-box;
 
     border-left: solid 1px;

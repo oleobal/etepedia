@@ -12,6 +12,7 @@
 
   let leftSidebarOpen: boolean = false;
   let rightSidebarOpen: boolean = false;
+  let darkMode = false;
 
   let ebAccount;
   const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
@@ -37,17 +38,19 @@
   });
 </script>
 
-{#if ebAccount != null}
-  <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
-  <DirSidebar bind:sidebarOpen={leftSidebarOpen} />
-  <SearchSidebar bind:sidebarOpen={rightSidebarOpen} />
-  <main>
-    <Router {routes} />
-  </main>
-{:else}
-  <Login />
-{/if}
-<SvelteToast options={{ reversed: true }} />
+<div class={"container light-colors " + (darkMode ? "dark-colors" : "")}>
+  {#if ebAccount != null}
+    <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
+    <DirSidebar bind:sidebarOpen={leftSidebarOpen} />
+    <SearchSidebar bind:sidebarOpen={rightSidebarOpen} />
+    <main>
+      <Router {routes} />
+    </main>
+  {:else}
+    <Login />
+  {/if}
+  <SvelteToast options={{ reversed: true }} />
+</div>
 
 <style>
   :root {
@@ -61,5 +64,11 @@
     padding: 1em;
     max-width: 1000px;
     margin: 0 auto;
+  }
+
+  .container {
+    background-color: var(--bg);
+    color: var(--fg);
+    border-color: var(--fg);
   }
 </style>
