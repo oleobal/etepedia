@@ -6,6 +6,7 @@
   import { dndzone } from "svelte-dnd-action";
   import { onDestroy } from "svelte";
   import { flip } from "svelte/animate";
+  import { push } from "svelte-spa-router";
 
   export let sidebarOpen = false;
 
@@ -83,6 +84,7 @@
                   <button
                     class="gray-button"
                     style="height: 20px; width: 20px; padding: 0; margin-left: 5px;"
+                    on:click={() => push(`#/directory/${dirItem.id}`)}
                     ><img
                       src={gearIconSvg}
                       alt="manage this directory"

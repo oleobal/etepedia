@@ -102,6 +102,12 @@ export class Directory {
     return me;
   }
 
+  /** save changes made to this object meta */
+  async saveMeta() {
+    this.collection.setMeta(this.meta);
+    await this.collectionManager.upload(this.collection);
+  }
+
   /** fetch updates to collection and this.collectionInfo */
   async update() {
     const stoken = this.collection.stoken;
