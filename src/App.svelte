@@ -2,11 +2,16 @@
   import Router from "svelte-spa-router";
   import TopBar from "./components/TopBar.svelte";
   import routes from "./routes";
-  import { SvelteToast, toast } from "@zerodevx/svelte-toast";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
   import { pushToast, restoreSavedSession } from "./nav";
   import { onDestroy, onMount } from "svelte";
   import Login from "./components/Login.svelte";
-  import { etebaseAccount, userSettings, currentDirectory } from "./stores";
+  import {
+    etebaseAccount,
+    userSettings,
+    currentDirectory,
+    directoriesById,
+  } from "./stores";
   import DirSidebar from "./components/DirSidebar.svelte";
   import SearchSidebar from "./components/SearchSidebar.svelte";
 
@@ -32,6 +37,16 @@
     }
   );
   onDestroy(unsubscribeFromCurrentDirectory);
+
+  const unsubscribeFromDirectories = directoriesById.subscribe((dirs) => {
+    if (!dirs) return;
+    dirs.forEach((_, id) => {
+      if (!$userSettings.directories.includes(id)) {
+        $userSettings.directories.push(id);
+      }
+    });
+  });
+  onDestroy(unsubscribeFromDirectories);
 
   onMount(async () => {
     if (ebAccount === null) await restoreSavedSession();

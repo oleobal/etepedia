@@ -1,8 +1,34 @@
 <script lang="ts">
-  import { directoriesById, etebaseAccount } from "../stores";
+  import { directoriesById, etebaseAccount, userSettings } from "../stores";
   import DirectoryCard from "./DirectoryCard.svelte";
+  import gearIconSvg from "../../static/gear-black.svg";
+  import closeCrossIconSvg from "../../static/close-cross.svg";
+  import { dndzone } from "svelte-dnd-action";
+  import { onDestroy } from "svelte";
+  import { flip } from "svelte/animate";
 
   export let sidebarOpen = false;
+
+  let dirItems: { id: string; isDndShadowItem?: boolean }[];
+  const unsubscribeFromUserSettings = userSettings.subscribe(
+    (us) =>
+      (dirItems = us.directories.map((it) => {
+        return { id: it };
+      }))
+  );
+  onDestroy(unsubscribeFromUserSettings);
+
+  let managementInProgress: boolean = false;
+
+  const dragFlipDurationMs = 100;
+
+  function handleDndConsider(e) {
+    dirItems = e.detail.items;
+  }
+  function handleDndFinalize(e) {
+    dirItems = e.detail.items;
+    $userSettings.directories = dirItems.map((it) => it.id);
+  }
 </script>
 
 <aside class:sidebarOpen>
@@ -11,13 +37,72 @@
         >create one</a
       >
     {:else}
-      <h1 style="font-size: 19px;">Select a directory</h1>
-
-      <div class="dir-list">
-        {#each $directoriesById.values() as directory}
-          <DirectoryCard {directory} />
-        {/each}
+      <div class="title">
+        <div style="width: 30px"></div>
+        {#if !managementInProgress}
+          <h1 style="font-size: 19px;">Select a directory</h1>
+        {:else}
+          <p style="font-family: var(--ui-font)">Drag to reorder</p>
+        {/if}
+        <button
+          class:gray-button={!managementInProgress}
+          style="height: 30px; width: 30px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
+          on:click={() => (managementInProgress = !managementInProgress)}
+        >
+          {#if managementInProgress}
+            <img src={closeCrossIconSvg} alt="stop managing directories" />
+          {:else}
+            <img src={gearIconSvg} alt="manage directories" />
+          {/if}
+        </button>
       </div>
+
+      {#if managementInProgress}
+        <div
+          class="dir-list"
+          use:dndzone={{
+            items: dirItems,
+            flipDurationMs: dragFlipDurationMs,
+            dropTargetStyle: {},
+          }}
+          on:consider={handleDndConsider}
+          on:finalize={handleDndFinalize}
+        >
+          {#each dirItems as dirItem (dirItem.id)}
+            <div animate:flip={{ duration: dragFlipDurationMs }}>
+              {#if dirItem.isDndShadowItem}
+                <div style="height: 40px;"></div>
+              {:else}
+                <div style="display:flex; align-items: center; width: 100%;">
+                  <div style="flex-grow: 1; ">
+                    <DirectoryCard
+                      directory={$directoriesById.get(dirItem.id)}
+                      inert={true}
+                    />
+                  </div>
+                  <button
+                    class="gray-button"
+                    style="height: 20px; width: 20px; padding: 0; margin-left: 5px;"
+                    ><img
+                      src={gearIconSvg}
+                      alt="manage this directory"
+                    /></button
+                  >
+                </div>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="dir-list">
+          {#each dirItems as dirItem}
+            <DirectoryCard
+              directory={$directoriesById.get(dirItem.id)}
+              inert={false}
+            />
+          {/each}
+        </div>
+      {/if}
       <a href="#/create-directory"><button>New directory</button></a>
     {/if}
     <div style="flex-grow: 1"></div>
@@ -44,6 +129,14 @@
 
     align-items: center;
     height: calc(100% - 50px) /* kludge to compensate for the top bar */;
+  }
+
+  .title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 57.5px; /* measured max value */
   }
 
   .dir-list {

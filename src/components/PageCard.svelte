@@ -33,8 +33,7 @@
 </div>
 
 <style>
-  h3,
-  p {
+  h3 {
     margin: 0;
   }
   a {
