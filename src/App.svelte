@@ -40,6 +40,9 @@
 
   const unsubscribeFromDirectories = directoriesById.subscribe((dirs) => {
     if (!dirs) return;
+    if (!$userSettings?.directories) {
+      $userSettings.directories = [];
+    }
     dirs.forEach((_, id) => {
       if (!$userSettings.directories.includes(id)) {
         $userSettings.directories.push(id);
