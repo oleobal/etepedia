@@ -13,7 +13,7 @@
     "svelte-spa-router": "^4.0.1",
     "ts-proto": "^1.181.1",
     "typescript": "^5.5.3",
-    "vite": "^5.3.5"
+    "vite": "^5.3.6"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
