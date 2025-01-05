@@ -190,7 +190,7 @@
     right: 0;
     box-shadow: 10px 0 40px var(--fg);
     clip-path: rect(
-      0 -50% 100% 100%
+      0 100% 100% -50%
     ); /* clip the shadow that would otherwise be on the top bar */
   }
 </style>

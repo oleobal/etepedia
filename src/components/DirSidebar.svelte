@@ -175,7 +175,7 @@
     left: 0;
     box-shadow: -10px 0 40px var(--fg);
     clip-path: rect(
-      0 0 100% 150%
+      0% 150% 100% 0
     ); /* clip the shadow that would otherwise be on the top bar */
   }
 </style>
