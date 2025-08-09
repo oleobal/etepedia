@@ -17,7 +17,6 @@
 
   let leftSidebarOpen: boolean = false;
   let rightSidebarOpen: boolean = false;
-  let darkMode = false;
 
   let ebAccount;
   const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
@@ -56,7 +55,7 @@
   });
 </script>
 
-<div class={"container light-colors " + (darkMode ? "dark-colors" : "")}>
+<div class={"container colors"} style:color-scheme={$userSettings.preferredDeviceTheme ?? "light dark"}>
   {#if ebAccount != null}
     <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
     <DirSidebar bind:sidebarOpen={leftSidebarOpen} />
@@ -88,5 +87,6 @@
     background-color: var(--bg);
     color: var(--fg);
     border-color: var(--fg);
+    height: 100%;
   }
 </style>

@@ -4,7 +4,7 @@ For development:
    
    `docker-compose up`
 
-2. Connect to `127.0.0.1:8000` and create users if needed (login: `admin/admin`)
+2. Connect to `http://127.0.0.1:8000` and create users if needed (login: `admin/admin`)
 
 3. Generate protobuf files:
 
