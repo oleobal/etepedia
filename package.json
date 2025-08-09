@@ -4,21 +4,21 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@zerodevx/svelte-toast": "^0.9.5",
-    "dompurify": "^3.1.6",
+    "@zerodevx/svelte-toast": "^0.9.6",
+    "dompurify": "^3.2.6",
     "etebase": "^0.43.1",
-    "marked": "^13.0.3",
-    "svelte": "^4.2.18",
-    "svelte-persisted-store": "^0.11.0",
+    "marked": "^16.1.2",
+    "svelte": "^5.38.0",
+    "svelte-persisted-store": "^0.12.0",
     "svelte-spa-router": "^4.0.1",
-    "ts-proto": "^1.181.1",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.5"
+    "ts-proto": "^2.7.6",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.1"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/vite-plugin-svelte": "^6.1.1",
     "@tsconfig/svelte": "^5.0.4",
-    "svelte-dnd-action": "^0.9.49"
+    "svelte-dnd-action": "^0.9.64"
   },
   "type": "module",
   "scripts": {

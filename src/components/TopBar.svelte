@@ -5,16 +5,21 @@
 
   import { currentDirectory } from "../stores";
 
-  export let leftSidebarOpen = false;
-  export let rightSidebarOpen = false;
-  let anySideBarOpen: boolean;
-  $: anySideBarOpen = leftSidebarOpen || rightSidebarOpen;
+  let {
+    leftSidebarOpen = $bindable(),
+    rightSidebarOpen = $bindable()
+  } : {
+    leftSidebarOpen : boolean,
+    rightSidebarOpen : boolean
+  } = $props()
+  let anySideBarOpen: boolean = $derived(leftSidebarOpen || rightSidebarOpen);
+  $effect(() => {console.log(leftSidebarOpen)})
 </script>
 
 <div class="topbar" class:anySideBarOpen>
   <button
     style="height: 42px; width: 42px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
-    on:click={() => (leftSidebarOpen = !leftSidebarOpen)}
+    onclick={() => (leftSidebarOpen = !leftSidebarOpen)}
     >{#if leftSidebarOpen}
       <img src={closeCrossIconUrl} alt="close list of directories" />
     {:else}
@@ -26,7 +31,7 @@
       {#if $currentDirectory != null}
         <a
           href="#/"
-          on:click={() => {
+          onclick={() => {
             leftSidebarOpen = false;
           }}>{$currentDirectory.meta.name}</a
         >
@@ -38,7 +43,7 @@
   </div>
   <button
     style="height: 42px; width: 42px; margin-left: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
-    on:click={() => (rightSidebarOpen = !rightSidebarOpen)}
+    onclick={() => (rightSidebarOpen = !rightSidebarOpen)}
     >{#if rightSidebarOpen}
       <img src={closeCrossIconUrl} alt="close search menu" />
     {:else}

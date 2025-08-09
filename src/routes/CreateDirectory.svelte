@@ -4,9 +4,9 @@
   import { replace } from "svelte-spa-router";
   import { get } from "svelte/store";
 
-  let name: string;
-  let description: string;
-  let creating = false;
+  let name: string = $state();
+  let description: string = $state();
+  let creating = $state(false);
 
   let ebAccount = get(etebaseAccount);
 
@@ -19,7 +19,7 @@
 
     let dirs = await listDirectories(ebAccount);
     directoriesById.set(dirs);
-    currentDirectory.set(newDir);
+    currentDirectory.set(dirs[newDir.collection.uid]);
     creating = false;
     replace("/");
   }
@@ -46,6 +46,6 @@
     style="width: 100%"
     placeholder="Description"
     bind:value={description}
-  />
-  <button on:click={handleCreation} disabled={!name || creating}>Create</button>
+  ></textarea>
+  <button onclick={handleCreation} disabled={!name || creating}>Create</button>
 </div>

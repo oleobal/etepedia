@@ -56,7 +56,7 @@
         class="max-width"
         placeholder="Description"
         bind:value={description}
-      />
+      ></textarea>
       <p style={"display: " + (previewing ? "block" : "none")}>
         <em>{description ? description : "No description"}</em>
       </p>
@@ -69,10 +69,10 @@
           (previewing ? "none" : "block")}
         placeholder="Markdown text"
         bind:value={text}
-      />
+      ></textarea>
       <div style={"display: " + (previewing ? "block" : "none")}>
         {#if text}
-          {@html DOMPurify.sanitize(parse(text))}
+          {@html DOMPurify.sanitize(parse(text, {async: false}))}
         {:else}
           <em>No contents</em>
         {/if}

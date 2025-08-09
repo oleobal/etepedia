@@ -9,10 +9,10 @@
   } from "../nav";
   import { toast } from "@zerodevx/svelte-toast";
 
-  let loginInProgress = false;
-  let username: string;
-  let password: string;
-  let endpoint: string;
+  let loginInProgress = $state(false);
+  let username: string = $state();
+  let password: string = $state();
+  let endpoint: string = $state();
 
   async function handleLogin() {
     console.info("Logging into Etebase..");
@@ -65,7 +65,7 @@
     placeholder="Etebase endpoint"
     bind:value={endpoint}
   />
-  <button on:click={handleLogin} disabled={loginInProgress}>Log in</button>
+  <button onclick={handleLogin} disabled={loginInProgress}>Log in</button>
   <div style="margin-bottom:5vh">
     <!-- this is to compensate for the empty space above the h1 -->
   </div>

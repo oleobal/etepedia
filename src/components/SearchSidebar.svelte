@@ -3,9 +3,13 @@
   import { Page } from "../lib/eb";
   import PageCard from "./PageCard.svelte";
 
-  export let sidebarOpen = false;
-  function normalize(s: string): string {
-    return s.normalize().toLowerCase();
+  let { sidebarOpen = $bindable() } : { sidebarOpen : boolean } = $props();
+
+  /** normalize and lowercase strings */
+  function normalize<T>(s: T): T {
+    if (typeof s === "string")
+      return s.normalize().toLowerCase() as T;
+    return s
   }
 
   async function search(
@@ -17,15 +21,15 @@
     let resultsByTier: Page[][] = [[], [], []];
     let totalResults = 0;
     for (const page of pages) {
-      if (normalize(page.meta.name).includes(query)) {
+      if (normalize(page.meta.name)?.includes(query)) {
         resultsByTier[0].push(page);
-      } else if (normalize(page.meta.description).includes(query)) {
+      } else if (normalize(page.meta.description)?.includes(query)) {
         resultsByTier[1].push(page);
       } else if (searchDeep) {
         if (!page.populated) {
           await page.populate();
         }
-        if (normalize(page.content.text).includes(query)) {
+        if (normalize(page.content.text)?.includes(query)) {
           resultsByTier[2].push(page);
         }
       }
@@ -57,7 +61,7 @@
 
       pagesToSearch = dirs.flatMap((dir) => Array.from(dir.pages.values()));
     } else {
-      if ($currentDirectory !== null) {
+      if ($currentDirectory) {
         if (!$currentDirectory.populated) await $currentDirectory.populate();
         pagesToSearch = Array.from($currentDirectory.pages.values());
       } else {
@@ -66,15 +70,15 @@
     }
   }
 
-  let searchQuery: string = "";
-  $: searchQuery, handleSearch();
-  $: $currentDirectory, adjustPagesToSearch();
-  $: pagesToSearch, handleSearch();
+  let searchQuery: string = $state("");
+  $effect(() => {searchQuery; handleSearch()});
+  $effect(() => {$currentDirectory; adjustPagesToSearch()});
+  $effect(() => {pagesToSearch; handleSearch()});
 
-  let pagesToSearch: Page[];
-  let searchMetaOnly: boolean = true;
-  let searchAllDirs: boolean = false;
-  let results: Page[] | null = null;
+  let pagesToSearch: Page[] = $state([]);
+  let searchMetaOnly: boolean = $state(true);
+  let searchAllDirs: boolean = $state(false);
+  let results: Page[] | null = $state(null);
 </script>
 
 <aside class:sidebarOpen>
@@ -82,23 +86,23 @@
     <div class="top">
       <h1 style="font-size: 19px">Search</h1>
       <div class="settings">
-        <div>
+        <div title="Only match results in titles and descriptions, as searching through all page text is very intensive.">
           <input
             type="checkbox"
             id="titles-only"
             bind:checked={searchMetaOnly}
-            on:change={() => {
+            onchange={() => {
               handleSearch();
             }}
           />
           <label for="titles-only">Titles & descriptions only</label>
         </div>
-        <div>
+        <div title={`Search through all accessible directories, not just the current one (${($currentDirectory)?.meta?.name})`}>
           <input
             type="checkbox"
             id="all-directories"
             bind:checked={searchAllDirs}
-            on:change={async () => {
+            onchange={async () => {
               await adjustPagesToSearch();
               handleSearch();
             }}
@@ -122,11 +126,17 @@
         <div
           style="display: flex; align-items: center; flex-direction: column; justify-content: space-evenly; flex-grow: 1;"
         >
+          <em>
           {#if results === null}
-            <em>Enter your query above</em>
+            {#if searchQuery}
+              Query too short, keep typing
+            {:else}
+              Enter your query above
+            {/if}
           {:else}
-            <em>No results</em>
+            No results
           {/if}
+          </em>
         </div>
       {/if}
     </div>

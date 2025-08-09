@@ -15,10 +15,10 @@
   import DirSidebar from "./components/DirSidebar.svelte";
   import SearchSidebar from "./components/SearchSidebar.svelte";
 
-  let leftSidebarOpen: boolean = false;
-  let rightSidebarOpen: boolean = false;
+  let leftSidebarOpen: boolean = $state(false);
+  let rightSidebarOpen: boolean = $state(false);
 
-  let ebAccount;
+  let ebAccount = $state(null);
   const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
     ebAccount = val;
   });

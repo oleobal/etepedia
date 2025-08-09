@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Directory } from "../lib/eb";
   import { currentDirectory } from "../stores";
-  export let directory: Directory;
+  let {directory} : {directory: Directory} = $props();
 
   let nbPages = directory.collectionInfo.pages.length;
 
-  $: isCurrent = directory === $currentDirectory;
+  let isCurrent = $derived(directory === $currentDirectory);
 </script>
 
 {#if isCurrent}<div class="current-marker">currently<br />viewing</div>{/if}

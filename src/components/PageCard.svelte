@@ -2,10 +2,8 @@
   import { Page } from "../lib/eb";
   import { pushToast } from "../nav";
 
-  export let page: Page;
-
-  let pageLink: string;
-  $: pageLink = `#/page/${page.item.uid}`;
+  let {page}: {page: Page} = $props();
+  let pageLink: string = $derived(`#/page/${page.item.uid}`);
 
   async function handleCopyLink() {
     await navigator.clipboard.writeText(pageLink);
@@ -25,7 +23,7 @@
   <div class="buttons">
     <button
       class="gray-button"
-      on:click={handleCopyLink}
+      onclick={handleCopyLink}
       style={"width: 100%;" + (page.meta.description ? "" : "height: 100%;")}
       title="Copy the internal (relative) link to this page">#</button
     >

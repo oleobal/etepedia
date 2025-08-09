@@ -8,9 +8,9 @@
   import { flip } from "svelte/animate";
   import { push } from "svelte-spa-router";
 
-  export let sidebarOpen = false;
+  let { sidebarOpen = $bindable() } : { sidebarOpen : boolean} = $props();
 
-  let dirItems: { id: string; isDndShadowItem?: boolean }[];
+  let dirItems: { id: string; isDndShadowItem?: boolean }[] = $state();
   const unsubscribeFromUserSettings = userSettings.subscribe(
     (us) =>
       (dirItems = us.directories.map((it) => {
@@ -19,7 +19,7 @@
   );
   onDestroy(unsubscribeFromUserSettings);
 
-  let managementInProgress: boolean = false;
+  let managementInProgress: boolean = $state(false);
 
   const dragFlipDurationMs = 100;
 
@@ -48,7 +48,7 @@
         <button
           class:gray-button={!managementInProgress}
           style="height: 30px; width: 30px; margin-right: 5px; font-size: 150%; padding: 0; flex-shrink: 0;"
-          on:click={() => (managementInProgress = !managementInProgress)}
+          onclick={() => (managementInProgress = !managementInProgress)}
         >
           {#if managementInProgress}
             <img src={closeCrossIconSvg} alt="stop managing directories" />
@@ -66,8 +66,8 @@
             flipDurationMs: dragFlipDurationMs,
             dropTargetStyle: {},
           }}
-          on:consider={handleDndConsider}
-          on:finalize={handleDndFinalize}
+          onconsider={handleDndConsider}
+          onfinalize={handleDndFinalize}
         >
           {#each dirItems as dirItem (dirItem.id)}
             <div animate:flip={{ duration: dragFlipDurationMs }}>
@@ -84,7 +84,7 @@
                   <button
                     class="gray-button"
                     style="height: 20px; width: 20px; padding: 0; margin-left: 5px;"
-                    on:click={() => push(`#/directory/${dirItem.id}`)}
+                    onclick={() => push(`#/directory/${dirItem.id}`)}
                     ><img
                       src={gearIconSvg}
                       alt="manage this directory"
@@ -112,7 +112,7 @@
       Logged in as <b>{$etebaseAccount.user.username}</b>.
       <a
         href="#/settings"
-        on:click={() => {
+        onclick={() => {
           sidebarOpen = false;
         }}>Settings</a
       >

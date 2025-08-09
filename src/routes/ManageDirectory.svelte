@@ -62,7 +62,7 @@
     style="width: 100%; box-sizing: border-box"
     placeholder="Description"
     bind:value={description}
-  />
+  ></textarea>
   <div class="buttons">
     <button
       disabled={name === directory.meta.name &&

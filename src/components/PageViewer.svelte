@@ -6,18 +6,23 @@
   import { pushToast, pushSuccessToast, pushErrorToast } from "../nav";
   import { toast } from "@zerodevx/svelte-toast";
 
-  export let page: Page;
+  let {page}: {page: Page} = $props();
 
-  let editing: boolean = false;
-  let editingStarted: boolean = false;
+  let editing: boolean = $state(false);
+  let editingStarted: boolean = $state(false);
 
-  let title: string | null = null;
-  let desc: string | null = null;
-  let text: string | null = null;
+  let title: string | null = $derived(page ? page.meta.name : null);
+  let desc: string | null = $derived(page ? page.meta.description : null);
+  let pageHasDesc = $derived(page?.meta?.description ? true : false);
+  let text: string | null = $state(null);
+  let pageHasText = $derived(page && page.populated && page?.content?.text ? true : false);
 
-  let newTitle: string | null = null;
-  let newDesc: string | null = null;
-  let newText: string | null = null;
+  $effect(() => {if (page) {loadText() }});
+  $effect(() => {editingStarted = editing || editingStarted});
+
+  let newTitle: string | null = $state(null);
+  let newDesc: string | null = $state(null);
+  let newText: string | null = $state(null);
 
   async function loadText() {
     if (page && !page.populated) {
@@ -57,13 +62,6 @@
     cancelEditing();
   }
 
-  $: page, loadText();
-  $: editingStarted = editing || editingStarted;
-  $: title = page ? page.meta.name : null;
-  $: desc = page ? page.meta.description : null;
-  $: pageHasDesc = page?.meta?.description ? true : false;
-  $: text = page && page.populated ? page.content.text : null;
-  $: pageHasText = page && page.populated && page?.content?.text ? true : false;
 </script>
 
 <h1>
@@ -93,14 +91,14 @@
     class={editing ? "" : "invisible"}
     placeholder="Description"
     bind:value={newDesc}
-  />
+  ></textarea>
 </div>
 
 <div class="separator">
   <div>
     <button
       class={editingStarted ? "" : "gray-button"}
-      on:click={() => {
+      onclick={() => {
         if (!editingStarted) {
           startEditing();
         }
@@ -108,9 +106,8 @@
       }}>{editing ? "Preview" : "Edit"}</button
     >
     {#if editingStarted}
-      <button class="red-button" on:click={cancelEditing}>cancel changes</button
-      >
-      <button class="green-button" on:click={saveEdits}>save changes</button>
+      <button class="red-button" onclick={cancelEditing}>cancel changes</button>
+      <button class="green-button" onclick={saveEdits}>save changes</button>
     {/if}
   </div>
   <button class="gray-button" disabled>Revisions</button>
@@ -121,9 +118,9 @@
   style={"text-align: " + (newText || text ? "left" : "center")}
 >
   {#if newText}
-    {@html DOMPurify.sanitize(parse(newText))}
+    {@html DOMPurify.sanitize(parse(newText, {async:false}))}
   {:else if text}
-    {@html DOMPurify.sanitize(parse(text))}
+    {@html DOMPurify.sanitize(parse(text, {async: false}))}
   {:else if !pageHasText}
     <em style="text-align: center">No text</em>
   {:else}
@@ -135,7 +132,7 @@
   class={editing ? "" : "invisible"}
   placeholder="Markdown text"
   bind:value={newText}
-/>
+></textarea>
 
 <style>
   .description {

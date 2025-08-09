@@ -3,11 +3,12 @@
   import { currentDirectory } from "../stores";
   import { push } from "svelte-spa-router";
   import DirectoryCardInside from "./DirectoryCardInside.svelte";
-  export let directory: Directory;
+ 
+  let { directory, inert } : {directory: Directory, inert: boolean} = $props();
 
-  export let inert: boolean;
+  let isCurrent = $derived(directory === $currentDirectory);
 
-  $: isCurrent = directory === $currentDirectory;
+  $effect(() => {console.log(directory, $currentDirectory, directory === $currentDirectory)})
 
   function selectDirectory() {
     currentDirectory.set(directory);
@@ -25,7 +26,7 @@
     class:isCurrent
     class:is-current-hover={isCurrent}
     class:directory-card-hover={!isCurrent}
-    on:click={selectDirectory}
+    onclick={selectDirectory}
     disabled={isCurrent}
   >
     <DirectoryCardInside {directory} />
