@@ -1,23 +1,20 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import { directoriesById, currentDirectory } from "../stores";
+  import { etebaseState } from "../state.svelte";
   import { Directory } from "../lib/eb";
-  import { toast } from "@zerodevx/svelte-toast";
   import { pushErrorToast, pushSuccessToast } from "../nav";
 
-  export let params: { uid: string } = { uid: "" };
+  let { uid }: { uid: string } = $props();
 
-  $: $currentDirectory = $directoriesById.get(params?.uid);
+  let directory: Directory = $state();
+  let name: string | null = $state();
+  let description: string | null = $state();
 
-  let directory: Directory;
-  let name;
-  let description;
-  const unsubscribeFromCurrentDirectory = currentDirectory.subscribe((dir) => {
-    directory = dir;
+  $effect(() => {
+    etebaseState.currentDirectory = etebaseState.directoriesById.get(uid);
+    directory = etebaseState.directoriesById.get(uid);
     name = directory.meta.name;
     description = directory.meta.description;
   });
-  onDestroy(unsubscribeFromCurrentDirectory);
 
   function cancelChanges() {
     name = directory.meta.name;
@@ -38,7 +35,7 @@
 </script>
 
 <svelte:head>
-  <title>Manage {$currentDirectory.meta.name}</title>
+  <title>Manage {directory.meta.name}</title>
 </svelte:head>
 
 <div
@@ -52,7 +49,7 @@
     margin-left: auto;
     "
 >
-  <h1>Manage directory {$currentDirectory.meta.name}</h1>
+  <h1>Manage directory {directory.meta.name}</h1>
   <input
     style="width: 100%; box-sizing: border-box"
     placeholder="Name"
@@ -67,13 +64,13 @@
     <button
       disabled={name === directory.meta.name &&
         description === directory.meta.description}
-      on:click={cancelChanges}
+      onclick={cancelChanges}
       class="red-button">Cancel changes</button
     >
     <button
       disabled={name === directory.meta.name &&
         description === directory.meta.description}
-      on:click={saveChanges}
+      onclick={saveChanges}
       class="green-button">Save changes</button
     >
   </div>

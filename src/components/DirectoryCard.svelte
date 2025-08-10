@@ -1,17 +1,15 @@
 <script lang="ts">
   import { Directory } from "../lib/eb";
-  import { currentDirectory } from "../stores";
+  import { etebaseState } from "../state.svelte";
   import { push } from "svelte-spa-router";
   import DirectoryCardInside from "./DirectoryCardInside.svelte";
- 
-  let { directory, inert } : {directory: Directory, inert: boolean} = $props();
 
-  let isCurrent = $derived(directory === $currentDirectory);
+  let { directory, inert }: { directory: Directory; inert: boolean } = $props();
 
-  $effect(() => {console.log(directory, $currentDirectory, directory === $currentDirectory)})
+  let isCurrent = $derived(directory === etebaseState.currentDirectory);
 
   function selectDirectory() {
-    currentDirectory.set(directory);
+    etebaseState.currentDirectory = directory;
     push("/");
   }
 </script>

@@ -9,13 +9,12 @@ interface Persisted<T> extends Writable<T> {
   reset: () => void;
 }
 
-export const etebaseAccount: Writable<Etebase.Account | null> = writable(null);
-export const directoriesById: Writable<Map<DirectoryID, Directory> | null> =
-  writable(null);
-export const currentDirectory: Writable<Directory | null> = writable(null);
-export const pagesById: Writable<Map<PageID, Directory>> = writable(
-  new Map<PageID, Directory>()
-);
+export let etebaseState = $state({
+  etebaseAccount: null as (Etebase.Account | null),
+  directoriesById: null as (Map<DirectoryID, Directory> | null),
+  currentDirectory: null as (Directory | null),
+  pagesById: new Map<PageID, Directory>(),
+});
 
 export const savedEtebaseSession: Persisted<string> = persisted(
   "saved-etebase-session",

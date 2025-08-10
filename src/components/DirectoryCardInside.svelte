@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Directory } from "../lib/eb";
-  import { currentDirectory } from "../stores";
-  let {directory} : {directory: Directory} = $props();
+  import { etebaseState } from "../state.svelte";
+  let { directory }: { directory: Directory } = $props();
 
   let nbPages = directory.collectionInfo.pages.length;
 
-  let isCurrent = $derived(directory === $currentDirectory);
+  let isCurrent = $derived(directory === etebaseState.currentDirectory);
 </script>
 
 {#if isCurrent}<div class="current-marker">currently<br />viewing</div>{/if}

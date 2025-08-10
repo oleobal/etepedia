@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { directoriesById, etebaseAccount, userSettings } from "../stores";
+  import { etebaseState, userSettings } from "../state.svelte";
   import DirectoryCard from "./DirectoryCard.svelte";
   import gearIconSvg from "../../static/gear-black.svg";
   import closeCrossIconSvg from "../../static/close-cross.svg";
@@ -8,14 +8,14 @@
   import { flip } from "svelte/animate";
   import { push } from "svelte-spa-router";
 
-  let { sidebarOpen = $bindable() } : { sidebarOpen : boolean} = $props();
+  let { sidebarOpen = $bindable() }: { sidebarOpen: boolean } = $props();
 
   let dirItems: { id: string; isDndShadowItem?: boolean }[] = $state();
   const unsubscribeFromUserSettings = userSettings.subscribe(
     (us) =>
       (dirItems = us.directories.map((it) => {
         return { id: it };
-      }))
+      })),
   );
   onDestroy(unsubscribeFromUserSettings);
 
@@ -34,8 +34,8 @@
 
 <aside class:sidebarOpen>
   <nav>
-    {#if $directoriesById.size == 0}No directories; <a href="#/create-directory"
-        >create one</a
+    {#if etebaseState.directoriesById.size == 0}No directories; <a
+        href="#/create-directory">create one</a
       >
     {:else}
       <div class="title">
@@ -77,7 +77,7 @@
                 <div style="display:flex; align-items: center; width: 100%;">
                   <div style="flex-grow: 1; ">
                     <DirectoryCard
-                      directory={$directoriesById.get(dirItem.id)}
+                      directory={etebaseState.directoriesById.get(dirItem.id)}
                       inert={true}
                     />
                   </div>
@@ -99,7 +99,7 @@
         <div class="dir-list">
           {#each dirItems as dirItem}
             <DirectoryCard
-              directory={$directoriesById.get(dirItem.id)}
+              directory={etebaseState.directoriesById.get(dirItem.id)}
               inert={false}
             />
           {/each}
@@ -109,7 +109,7 @@
     {/if}
     <div style="flex-grow: 1"></div>
     <div style="font-family: var(--ui-font)">
-      Logged in as <b>{$etebaseAccount.user.username}</b>.
+      Logged in as <b>{etebaseState.etebaseAccount.user.username}</b>.
       <a
         href="#/settings"
         onclick={() => {

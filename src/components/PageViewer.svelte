@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { currentDirectory } from "../stores";
+  import { etebaseState } from "../state.svelte";
   import { Page } from "../lib/eb";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
   import { pushToast, pushSuccessToast, pushErrorToast } from "../nav";
   import { toast } from "@zerodevx/svelte-toast";
 
-  let {page}: {page: Page} = $props();
+  let { page }: { page: Page } = $props();
 
   let editing: boolean = $state(false);
   let editingStarted: boolean = $state(false);
@@ -15,10 +15,18 @@
   let desc: string | null = $derived(page ? page.meta.description : null);
   let pageHasDesc = $derived(page?.meta?.description ? true : false);
   let text: string | null = $state(null);
-  let pageHasText = $derived(page && page.populated && page?.content?.text ? true : false);
+  let pageHasText = $derived(
+    page && page.populated && page?.content?.text ? true : false,
+  );
 
-  $effect(() => {if (page) {loadText() }});
-  $effect(() => {editingStarted = editing || editingStarted});
+  $effect(() => {
+    if (page) {
+      loadText();
+    }
+  });
+  $effect(() => {
+    editingStarted = editing || editingStarted;
+  });
 
   let newTitle: string | null = $state(null);
   let newDesc: string | null = $state(null);
@@ -51,7 +59,7 @@
     page.meta.description = newDesc;
     page.meta.name = newTitle;
     try {
-      await $currentDirectory.uploadPage(page);
+      await etebaseState.currentDirectory.uploadPage(page);
       toast.pop(toastId);
       pushSuccessToast("Page saved");
     } catch (error) {
@@ -61,7 +69,6 @@
     }
     cancelEditing();
   }
-
 </script>
 
 <h1>
@@ -118,9 +125,9 @@
   style={"text-align: " + (newText || text ? "left" : "center")}
 >
   {#if newText}
-    {@html DOMPurify.sanitize(parse(newText, {async:false}))}
+    {@html DOMPurify.sanitize(parse(newText, { async: false }))}
   {:else if text}
-    {@html DOMPurify.sanitize(parse(text, {async: false}))}
+    {@html DOMPurify.sanitize(parse(text, { async: false }))}
   {:else if !pageHasText}
     <em style="text-align: center">No text</em>
   {:else}

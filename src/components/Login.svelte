@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Etebase from "etebase";
-  import { savedEtebaseSession } from "../stores";
+  import { savedEtebaseSession } from "../state.svelte";
   import {
     loadSession,
     pushErrorToast,
@@ -25,7 +25,7 @@
       const ebAccount = await Etebase.Account.login(
         username,
         password,
-        endpoint
+        endpoint,
       );
       const savedSession = await ebAccount.save();
       savedEtebaseSession.set(savedSession);

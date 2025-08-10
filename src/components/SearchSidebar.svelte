@@ -1,21 +1,20 @@
 <script lang="ts">
-  import { currentDirectory, directoriesById } from "../stores";
+  import { etebaseState } from "../state.svelte";
   import { Page } from "../lib/eb";
   import PageCard from "./PageCard.svelte";
 
-  let { sidebarOpen = $bindable() } : { sidebarOpen : boolean } = $props();
+  let { sidebarOpen = $bindable() }: { sidebarOpen: boolean } = $props();
 
   /** normalize and lowercase strings */
   function normalize<T>(s: T): T {
-    if (typeof s === "string")
-      return s.normalize().toLowerCase() as T;
-    return s
+    if (typeof s === "string") return s.normalize().toLowerCase() as T;
+    return s;
   }
 
   async function search(
     query: string,
     pages: Iterable<Page>,
-    searchDeep: boolean
+    searchDeep: boolean,
   ): Promise<Page[]> {
     query = normalize(query);
     let resultsByTier: Page[][] = [[], [], []];
@@ -50,20 +49,23 @@
 
   async function adjustPagesToSearch() {
     if (searchAllDirs) {
-      const dirs = Array.from($directoriesById.values());
+      const dirs = Array.from(etebaseState.directoriesById.values());
       await Promise.all(
         dirs.map(async (dir) => {
           if (!dir.populated) {
             await dir.populate();
           }
-        })
+        }),
       );
 
       pagesToSearch = dirs.flatMap((dir) => Array.from(dir.pages.values()));
     } else {
-      if ($currentDirectory) {
-        if (!$currentDirectory.populated) await $currentDirectory.populate();
-        pagesToSearch = Array.from($currentDirectory.pages.values());
+      if (etebaseState.currentDirectory) {
+        if (!etebaseState.currentDirectory.populated)
+          await etebaseState.currentDirectory.populate();
+        pagesToSearch = Array.from(
+          etebaseState.currentDirectory.pages.values(),
+        );
       } else {
         pagesToSearch = [];
       }
@@ -71,9 +73,18 @@
   }
 
   let searchQuery: string = $state("");
-  $effect(() => {searchQuery; handleSearch()});
-  $effect(() => {$currentDirectory; adjustPagesToSearch()});
-  $effect(() => {pagesToSearch; handleSearch()});
+  $effect(() => {
+    searchQuery;
+    handleSearch();
+  });
+  $effect(() => {
+    etebaseState.currentDirectory;
+    adjustPagesToSearch();
+  });
+  $effect(() => {
+    pagesToSearch;
+    handleSearch();
+  });
 
   let pagesToSearch: Page[] = $state([]);
   let searchMetaOnly: boolean = $state(true);
@@ -86,7 +97,9 @@
     <div class="top">
       <h1 style="font-size: 19px">Search</h1>
       <div class="settings">
-        <div title="Only match results in titles and descriptions, as searching through all page text is very intensive.">
+        <div
+          title="Only match results in titles and descriptions, as searching through all page text is very intensive."
+        >
           <input
             type="checkbox"
             id="titles-only"
@@ -97,7 +110,9 @@
           />
           <label for="titles-only">Titles & descriptions only</label>
         </div>
-        <div title={`Search through all accessible directories, not just the current one (${($currentDirectory)?.meta?.name})`}>
+        <div
+          title={`Search through all accessible directories, not just the current one (${etebaseState?.currentDirectory?.meta?.name})`}
+        >
           <input
             type="checkbox"
             id="all-directories"
@@ -127,15 +142,15 @@
           style="display: flex; align-items: center; flex-direction: column; justify-content: space-evenly; flex-grow: 1;"
         >
           <em>
-          {#if results === null}
-            {#if searchQuery}
-              Query too short, keep typing
+            {#if results === null}
+              {#if searchQuery}
+                Query too short, keep typing
+              {:else}
+                Enter your query above
+              {/if}
             {:else}
-              Enter your query above
+              No results
             {/if}
-          {:else}
-            No results
-          {/if}
           </em>
         </div>
       {/if}

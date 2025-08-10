@@ -3,17 +3,16 @@
   import listIconUrl from "../../static/list.svg";
   import magnifyingGlassIconUrl from "../../static/magnifying-glass.svg";
 
-  import { currentDirectory } from "../stores";
+  import { etebaseState } from "../state.svelte";
 
   let {
     leftSidebarOpen = $bindable(),
-    rightSidebarOpen = $bindable()
-  } : {
-    leftSidebarOpen : boolean,
-    rightSidebarOpen : boolean
-  } = $props()
+    rightSidebarOpen = $bindable(),
+  }: {
+    leftSidebarOpen: boolean;
+    rightSidebarOpen: boolean;
+  } = $props();
   let anySideBarOpen: boolean = $derived(leftSidebarOpen || rightSidebarOpen);
-  $effect(() => {console.log(leftSidebarOpen)})
 </script>
 
 <div class="topbar" class:anySideBarOpen>
@@ -28,12 +27,12 @@
   </button>
   <div class="restofbar">
     <div style="text-wrap: nowrap; overflow-x: clip;">
-      {#if $currentDirectory != null}
+      {#if etebaseState.currentDirectory != null}
         <a
           href="#/"
           onclick={() => {
             leftSidebarOpen = false;
-          }}>{$currentDirectory.meta.name}</a
+          }}>{etebaseState.currentDirectory.meta.name}</a
         >
       {:else}
         (no directory selected)

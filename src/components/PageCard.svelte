@@ -2,7 +2,7 @@
   import { Page } from "../lib/eb";
   import { pushToast } from "../nav";
 
-  let {page}: {page: Page} = $props();
+  let { page }: { page: Page } = $props();
   let pageLink: string = $derived(`#/page/${page.item.uid}`);
 
   async function handleCopyLink() {

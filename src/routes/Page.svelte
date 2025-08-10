@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentDirectory, pagesById, userSettings } from "../stores";
+  import { etebaseState, userSettings } from "../state.svelte";
   import { Directory, Page } from "../lib/eb";
   import PageViewer from "../components/PageViewer.svelte";
 
@@ -10,14 +10,14 @@
 
   async function loadPage() {
     page = null;
-    if ($pagesById.has(params?.uid)) {
-      dir = $pagesById.get(params.uid);
+    if (etebaseState.pagesById.has(params?.uid)) {
+      dir = etebaseState.pagesById.get(params.uid);
       if (!dir.populated) {
         await dir.populate();
       }
       page = dir.pages.get(params.uid);
-      if (dir != $currentDirectory) {
-        currentDirectory.set(dir);
+      if (dir != etebaseState.currentDirectory) {
+        etebaseState.currentDirectory = dir;
       }
 
       userSettings.update((us) => {
@@ -30,11 +30,11 @@
         if (existingIndex !== -1) {
           us.latestPageViewsByDirectory[dir.collection.uid].splice(
             existingIndex,
-            1
+            1,
           );
         }
         let newLength = us.latestPageViewsByDirectory[dir.collection.uid].push(
-          page.item.uid
+          page.item.uid,
         );
         if (newLength > 100) {
           us.latestPageViewsByDirectory[dir.collection.uid].shift();

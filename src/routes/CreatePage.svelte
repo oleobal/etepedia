@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentDirectory, pagesById } from "../stores";
+  import { etebaseState } from "../state.svelte";
   import { Page } from "../lib/eb";
   import { push } from "svelte-spa-router";
   import { parse } from "marked";
@@ -24,8 +24,8 @@
     page.meta.description = description;
     page.content.text = text;
 
-    await $currentDirectory.uploadPage(page);
-    $pagesById.set(page.item.uid, $currentDirectory);
+    await etebaseState.currentDirectory.uploadPage(page);
+    etebaseState.pagesById.set(page.item.uid, etebaseState.currentDirectory);
 
     pushSuccessToast("Page created");
     push(`/page/${page.item.uid}`);
@@ -37,7 +37,7 @@
 </svelte:head>
 
 <div>
-  <h1>Create page on {$currentDirectory.meta.name}</h1>
+  <h1>Create page on {etebaseState.currentDirectory.meta.name}</h1>
   <div class="form">
     <div class="max-width">
       <input
@@ -72,7 +72,7 @@
       ></textarea>
       <div style={"display: " + (previewing ? "block" : "none")}>
         {#if text}
-          {@html DOMPurify.sanitize(parse(text, {async: false}))}
+          {@html DOMPurify.sanitize(parse(text, { async: false }))}
         {:else}
           <em>No contents</em>
         {/if}

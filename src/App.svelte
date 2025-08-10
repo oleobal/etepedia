@@ -4,59 +4,52 @@
   import routes from "./routes";
   import { SvelteToast } from "@zerodevx/svelte-toast";
   import { pushToast, restoreSavedSession } from "./nav";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import Login from "./components/Login.svelte";
-  import {
-    etebaseAccount,
-    userSettings,
-    currentDirectory,
-    directoriesById,
-  } from "./stores";
+  import { etebaseState, userSettings } from "./state.svelte";
   import DirSidebar from "./components/DirSidebar.svelte";
   import SearchSidebar from "./components/SearchSidebar.svelte";
 
   let leftSidebarOpen: boolean = $state(false);
   let rightSidebarOpen: boolean = $state(false);
 
-  let ebAccount = $state(null);
-  const unsubscribeFromAccount = etebaseAccount.subscribe((val) => {
-    ebAccount = val;
-  });
-  onDestroy(unsubscribeFromAccount);
-
-  const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
-    (currentDir) => {
-      if (currentDir) {
-        userSettings.update((userSetts) => {
-          userSetts.currentDirectory = currentDir?.collection?.uid;
-          return userSetts;
-        });
-        pushToast(`Now viewing directory <b>${currentDir.meta.name}</b>`);
-      }
+  $effect(() => {
+    if (
+      etebaseState?.currentDirectory?.collection?.uid &&
+      etebaseState.currentDirectory.collection.uid !=
+        $userSettings.currentDirectory
+    ) {
+      $userSettings.currentDirectory =
+        etebaseState.currentDirectory.collection.uid;
+      pushToast(
+        `Now viewing directory <b>${etebaseState.currentDirectory.meta.name}</b>`,
+      );
     }
-  );
-  onDestroy(unsubscribeFromCurrentDirectory);
-
-  const unsubscribeFromDirectories = directoriesById.subscribe((dirs) => {
-    if (!dirs) return;
-    if (!$userSettings?.directories) {
-      $userSettings.directories = [];
-    }
-    dirs.forEach((_, id) => {
-      if (!$userSettings.directories.includes(id)) {
-        $userSettings.directories.push(id);
-      }
-    });
   });
-  onDestroy(unsubscribeFromDirectories);
+
+  $effect(() => {
+    if (etebaseState?.directoriesById) {
+      if (!$userSettings?.directories) {
+        $userSettings.directories = [];
+      }
+      etebaseState.directoriesById.forEach((_, id) => {
+        if (!$userSettings.directories.includes(id)) {
+          $userSettings.directories.push(id);
+        }
+      });
+    }
+  });
 
   onMount(async () => {
-    if (ebAccount === null) await restoreSavedSession();
+    if (etebaseState.etebaseAccount === null) await restoreSavedSession();
   });
 </script>
 
-<div class={"container colors"} style:color-scheme={$userSettings.preferredDeviceTheme ?? "light dark"}>
-  {#if ebAccount != null}
+<div
+  class={"container colors"}
+  style:color-scheme={$userSettings.preferredDeviceTheme ?? "light dark"}
+>
+  {#if etebaseState.etebaseAccount != null}
     <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
     <DirSidebar bind:sidebarOpen={leftSidebarOpen} />
     <SearchSidebar bind:sidebarOpen={rightSidebarOpen} />

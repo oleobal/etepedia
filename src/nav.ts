@@ -1,12 +1,9 @@
 import { push } from "svelte-spa-router";
 import {
-  currentDirectory,
-  directoriesById,
-  etebaseAccount,
-  pagesById,
+  etebaseState,
   savedEtebaseSession,
   userSettings,
-} from "./stores";
+} from "./state.svelte";
 import { get } from "svelte/store";
 import { indexPages, listDirectories } from "./lib/eb";
 import * as Etebase from "etebase";
@@ -18,7 +15,7 @@ export async function loadSession(ebAccount: Etebase.Account) {
   console.info("Successfully connected!");
 
   let dirs = await listDirectories(ebAccount);
-  directoriesById.set(dirs);
+  etebaseState.directoriesById = dirs
 
   let uSettings: UserSettings;
   const unsubscribeFromUserSettings = userSettings.subscribe(
@@ -29,24 +26,24 @@ export async function loadSession(ebAccount: Etebase.Account) {
     let userSelectedDir = uSettings.currentDirectory;
     if (userSelectedDir) {
       try {
-        currentDirectory.set(dirs.get(userSelectedDir));
+        etebaseState.currentDirectory = dirs.get(userSelectedDir);
       } catch (error) {
         console.error(error);
         userSettings.update((us) => {
           delete us.currentDirectory;
           return us;
         });
-        currentDirectory.set(dirs.values().next().value);
+        etebaseState.currentDirectory = dirs.values().next().value;
       }
     } else {
-      currentDirectory.set(dirs.values().next().value);
+      etebaseState.currentDirectory = dirs.values().next().value;
     }
   }
   let gpi = await indexPages(Array.from(dirs.values())); // shouldn't be needed anymore in future versions where map works on iterators
-  pagesById.set(gpi);
+  etebaseState.pagesById = gpi;
 
   unsubscribeFromUserSettings();
-  etebaseAccount.set(ebAccount); // last because this will trigger updates
+  etebaseState.etebaseAccount = ebAccount;
 }
 
 export async function restoreSavedSession() {
@@ -66,11 +63,12 @@ export async function restoreSavedSession() {
 }
 
 export function logout() {
-  etebaseAccount.set(null);
+  etebaseState.etebaseAccount = null
+  etebaseState.directoriesById = null
+  etebaseState.currentDirectory = null
+  etebaseState.pagesById = new Map()
+
   savedEtebaseSession.reset();
-  directoriesById.set(null);
-  currentDirectory.set(null);
-  pagesById.set(new Map());
   push("/");
 }
 

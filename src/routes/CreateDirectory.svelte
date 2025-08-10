@@ -1,25 +1,27 @@
 <script lang="ts">
-  import { etebaseAccount, directoriesById, currentDirectory } from "../stores";
+  import { etebaseState, userSettings } from "../state.svelte";
   import { listDirectories, Directory } from "../lib/eb";
   import { replace } from "svelte-spa-router";
-  import { get } from "svelte/store";
 
   let name: string = $state();
   let description: string = $state();
   let creating = $state(false);
 
-  let ebAccount = get(etebaseAccount);
-
   async function handleCreation() {
     creating = true;
-    let newDir = await Directory.Create(ebAccount.getCollectionManager(), {
-      name: name,
-      description: description,
-    });
+    let newDir = await Directory.Create(
+      etebaseState.etebaseAccount.getCollectionManager(),
+      {
+        name: name,
+        description: description,
+      },
+    );
 
-    let dirs = await listDirectories(ebAccount);
-    directoriesById.set(dirs);
-    currentDirectory.set(dirs[newDir.collection.uid]);
+    let dirs = await listDirectories(etebaseState.etebaseAccount);
+    etebaseState.directoriesById = dirs;
+    etebaseState.currentDirectory = dirs.get(newDir.collection.uid);
+    $userSettings.directories.push(newDir.collection.uid);
+    $userSettings.currentDirectory = newDir.collection.uid;
     creating = false;
     replace("/");
   }

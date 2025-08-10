@@ -1,84 +1,71 @@
 <script lang="ts">
-  import { currentDirectory, directoriesById, userSettings } from "../stores";
-  import { onDestroy } from "svelte";
-  import { Directory, Page } from "../lib/eb";
+  import { etebaseState, userSettings } from "../state.svelte";
+  import { Page } from "../lib/eb";
   import PageCard from "../components/PageCard.svelte";
-  import { onMount } from "svelte";
 
-  let currentDir: Directory;
+  let recentPages: string[] = $derived.by(() => {
+    return $userSettings.latestPageViewsByDirectory[
+      etebaseState.currentDirectory?.collection?.uid
+    ]
+      ? $userSettings.latestPageViewsByDirectory[
+          etebaseState.currentDirectory?.collection?.uid
+        ]
+          .slice(-6)
+          .reverse()
+      : [];
+  });
 
-  let recentPages: string[];
-
-  $: recentPages = $userSettings.latestPageViewsByDirectory[
-    currentDir?.collection?.uid
-  ]
-    ? $userSettings.latestPageViewsByDirectory[currentDir?.collection?.uid]
-        .slice(-6)
-        .reverse()
-    : [];
-
-  let pages: Map<string, Page> | null = null;
-
-  const unsubscribeFromCurrentDirectory = currentDirectory.subscribe(
-    async (d) => {
-      currentDir = d;
-      pages = null;
-      if (!currentDir) {
-        return;
-      }
-      await currentDir.update();
-      if (!currentDir.populated) {
-        await currentDir.populate();
-      }
-      pages = currentDir.pages;
-    }
-  );
-  onDestroy(unsubscribeFromCurrentDirectory);
-
-  onMount(async () => {
-    if (!currentDir) {
-      return;
-    }
-    await currentDir.update();
-    if (!currentDir.populated) {
-      await currentDir.populate();
-    }
-    pages = currentDir.pages;
+  // https://github.com/sveltejs/svelte/issues/9520
+  let pagesPromise = $derived.by(async () => {
+    if (!etebaseState.currentDirectory) return new Map<string, Page>();
+    await etebaseState.currentDirectory.update();
+    await etebaseState.currentDirectory.populate();
+    return etebaseState.currentDirectory.pages;
   });
 </script>
 
 <svelte:head>
-  <title>{$currentDirectory ? $currentDirectory.meta.name : "Etepedia"}</title>
+  <title
+    >{etebaseState.currentDirectory
+      ? etebaseState.currentDirectory.meta.name
+      : "Etepedia"}</title
+  >
 </svelte:head>
 
-{#if $directoriesById.size == 0}No directories; <a href="#/create-directory"
-    ><button>create one</button></a
+{#if etebaseState.directoriesById.size == 0}No directories; <a
+    href="#/create-directory"><button>create one</button></a
   >
 {:else}
-  <h1>Pages in {currentDir.meta.name}</h1>
+  <h1>Pages in {etebaseState.currentDirectory.meta.name}</h1>
   <div style="text-align: left;">
-    {#if !pages}
+    {#await pagesPromise}
       <p>Populating..</p>
-    {:else if pages.size === 0}
-      <p>No pages; <a href="#/create-page"><button>create one</button></a></p>
-    {:else}
-      {#if recentPages.length > 0}
-        <div class="title-with-button">
-          <h2>Recently viewed pages</h2>
-          <a href="#/create-page"><button>New Page</button></a>
-        </div>
-        {#each recentPages as pageId}
-          <PageCard page={currentDir.pages.get(pageId)} />
+    {:then pages}
+      {#if !pages}
+        <p>Something went wrong fetching pages.</p>
+      {:else if pages.size === 0}
+        <p>No pages; <a href="#/create-page"><button>create one</button></a></p>
+      {:else}
+        {#if recentPages.length > 0}
+          <div class="title-with-button">
+            <h2>Recently viewed pages</h2>
+            <a href="#/create-page"><button>New Page</button></a>
+          </div>
+          {#each recentPages as pageId}
+            <PageCard page={pages.get(pageId)} />
+          {/each}
+          <div class="title-with-button">
+            <h2>All pages</h2>
+            <a href="#/create-page"><button>New Page</button></a>
+          </div>
+        {/if}
+        {#each [...pages] as [_, page]}
+          <PageCard {page} />
         {/each}
-        <div class="title-with-button">
-          <h2>All pages</h2>
-          <a href="#/create-page"><button>New Page</button></a>
-        </div>
       {/if}
-      {#each [...pages] as [_, page]}
-        <PageCard {page} />
-      {/each}
-    {/if}
+    {:catch error}
+      <p>Something went wrong fetching pages.</p>
+    {/await}
   </div>
   <a href="#/create-page"><button>New Page</button></a>
 {/if}
