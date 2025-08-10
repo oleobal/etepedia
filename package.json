@@ -22,7 +22,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "VITE_IS_DEV=true vite dev",
     "build": "vite build",
     "build-github-pages": "vite build --base=/etepedia/",
     "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/lib ./protobuf/*"
