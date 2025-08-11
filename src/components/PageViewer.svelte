@@ -117,7 +117,7 @@
       <button class="green-button" onclick={saveEdits}>save changes</button>
     {/if}
   </div>
-  <button class="gray-button" disabled>Revisions</button>
+  <button class="gray-button" disabled title="Available soon!">Revisions</button>
 </div>
 
 <div

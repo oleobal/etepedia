@@ -1,12 +1,19 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { logout } from "../nav";
   import { userSettings } from "../state.svelte";
 
   let deviceThemeOptions = new Map([
-    ["light dark", "Detected"],
+    ["light dark", "Detected automatically"],
     ["only light", "Always light"],
     ["only dark", "Always dark"],
   ]);
+
+  onMount(() => {
+    if ($userSettings.preferredDeviceTheme == null) {
+      $userSettings.preferredDeviceTheme = "light dark"
+    }
+  })
 </script>
 
 <svelte:head>

@@ -27,6 +27,8 @@
     }
   });
 
+  // update $userSettings.directories with data from etebaseState.directoriesById
+  // $userSettings.directories is then used as source as it keeps user-editable ordering
   $effect(() => {
     if (etebaseState?.directoriesById) {
       if (!$userSettings?.directories) {
@@ -40,15 +42,17 @@
     }
   });
 
+  // escape from app to set theme
+  $effect(() => {
+    document.documentElement.style.colorScheme = $userSettings.preferredDeviceTheme ?? "light dark"
+  })
+
   onMount(async () => {
     if (etebaseState.etebaseAccount === null) await restoreSavedSession();
   });
 </script>
 
-<div
-  class={"container colors"}
-  style:color-scheme={$userSettings.preferredDeviceTheme ?? "light dark"}
->
+<div class="container">
   {#if etebaseState.etebaseAccount != null}
     <TopBar bind:leftSidebarOpen bind:rightSidebarOpen />
     <DirSidebar bind:sidebarOpen={leftSidebarOpen} />

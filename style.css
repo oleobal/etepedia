@@ -1,13 +1,15 @@
 .colors {
-  --fg: light-dark(#000, #fff);
-  --bg: light-dark(#fff, hsl(239, 46%, 25%));
-  --primary: light-dark(hsl(240, 100%, 60%), hsl(283, 100%, 50%));
-  --primary-highlight: light-dark(hsl(240, 100%, 70%), hsl(283, 100%, 70%));
-  --primary-disabled: light-dark(hsl(240, 100%, 80%),hsl(283, 100%, 34%));
+  --fg: light-dark(#000, #eee);
+  --bg: light-dark(#fff, #111);
+  --primary: light-dark(hsl(240, 100%, 60%), hsl(240, 80%, 45%));
+  --primary-highlight: light-dark(hsl(240, 100%, 70%), hsl(240, 100%, 60%));
+  --primary-disabled: light-dark(hsl(240, 50%, 80%), hsl(240, 50%, 30%));
+  --primary-fg: light-dark(hsl(240, 100%, 45%), hsl(240, 100%, 70%));
+  --primary-fg-highlight: light-dark(hsl(240, 100%, 55%), hsl(240, 100%, 80%));
 
-  --gray: light-dark(hsl(0, 0%, 90%), hsl(239, 46%, 45%));
-  --gray-highlight: light-dark(hsl(0, 0%, 50%), hsl(239, 46%, 60%));
-  --gray-disabled: light-dark(hsl(0, 0%, 100%), hsl(239, 46%, 25%));
+  --gray: light-dark(hsl(0, 0%, 90%), hsl(239, 40%, 40%));
+  --gray-highlight: light-dark(hsl(0, 0%, 50%), hsl(239, 40%, 55%));
+  --gray-disabled: var(--bg)
 
   --green: hsl(140, 100%, 30%);
   --green-highlight: hsl(140, 100%, 40%);
@@ -20,7 +22,10 @@
 
 a {
   text-decoration: none;
-  color: var(--primary);
+  color: var(--primary-fg);
+}
+a:hover {
+  color: var(--primary-fg-highlight)
 }
 
 input {
