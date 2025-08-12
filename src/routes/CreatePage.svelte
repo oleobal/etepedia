@@ -25,7 +25,7 @@
     page.content.text = text;
 
     await etebaseState.currentDirectory.uploadPage(page);
-    etebaseState.pagesById.set(page.item.uid, etebaseState.currentDirectory);
+    etebaseState.pagesIndex.set(page.item.uid, etebaseState.currentDirectory);
 
     pushSuccessToast("Page created");
     push(`/page/${page.item.uid}`);

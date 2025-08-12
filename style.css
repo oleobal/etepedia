@@ -9,7 +9,7 @@
 
   --gray: light-dark(hsl(0, 0%, 90%), hsl(239, 40%, 40%));
   --gray-highlight: light-dark(hsl(0, 0%, 50%), hsl(239, 40%, 55%));
-  --gray-disabled: var(--bg)
+  --gray-disabled: var(--bg);
 
   --green: hsl(140, 100%, 30%);
   --green-highlight: hsl(140, 100%, 40%);

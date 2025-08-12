@@ -1,5 +1,6 @@
 import * as Etebase from "etebase";
 import * as Protobuf from "./protobuf/page";
+import { SvelteMap } from "svelte/reactivity";
 
 const COLLECTION_TYPE = "etepedia.directory";
 
@@ -163,7 +164,7 @@ export class Directory {
 
 export async function listDirectories(
   etebase: Etebase.Account
-): Promise<Map<DirectoryID, Directory>> {
+): Promise<SvelteMap<DirectoryID, Directory>> {
   let collectionManager = etebase.getCollectionManager();
   let collections = await collectionManager.list(COLLECTION_TYPE);
 
@@ -179,13 +180,13 @@ export async function listDirectories(
     )
   );
 
-  return new Map(directories);
+  return new SvelteMap(directories);
 }
 
 /** "what directory does this page belong to?" */
-export function indexPages(dirs: Directory[]): Map<PageID, Directory> {
+export function indexPages(dirs: Directory[]): SvelteMap<PageID, Directory> {
   type PageRef = [PageID, Directory]; // for some reason without the cast it is interpreted as (string | Directory) rather than a tuple
-  return new Map(
+  return new SvelteMap(
     dirs.flatMap((dir) =>
       dir.collectionInfo.pages.map((pageID) => [pageID, dir] as PageRef)
     )

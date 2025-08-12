@@ -10,6 +10,7 @@ import * as Etebase from "etebase";
 import { UserSettings } from "./lib/settings";
 import { toast } from "@zerodevx/svelte-toast";
 import { mergeDeep as deeplyMerge } from "./lib/util";
+import { SvelteMap } from "svelte/reactivity";
 
 export async function loadSession(ebAccount: Etebase.Account) {
   console.info("Successfully connected!");
@@ -40,7 +41,7 @@ export async function loadSession(ebAccount: Etebase.Account) {
     }
   }
   let gpi = await indexPages(Array.from(dirs.values())); // shouldn't be needed anymore in future versions where map works on iterators
-  etebaseState.pagesById = gpi;
+  etebaseState.pagesIndex = gpi;
 
   unsubscribeFromUserSettings();
   etebaseState.etebaseAccount = ebAccount;
@@ -66,7 +67,7 @@ export function logout() {
   etebaseState.etebaseAccount = null
   etebaseState.directoriesById = null
   etebaseState.currentDirectory = null
-  etebaseState.pagesById = new Map()
+  etebaseState.pagesIndex = new SvelteMap()
 
   savedEtebaseSession.reset();
   push("/");
