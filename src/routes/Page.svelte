@@ -16,12 +16,10 @@
       loadPage(params.uid).then((it) => {
         etebaseState.cachedPages.set(params.uid, it);
         page = it;
-        console.log("page loaded")
       })
     }
     else {
       page = etebaseState.cachedPages.get(params.uid);
-      console.log("page pulled from cache")
     }
   })
 

@@ -3,13 +3,13 @@
   import { etebaseState } from "../state.svelte";
   let { directory }: { directory: Directory } = $props();
 
-  let nbPages = directory.collectionInfo.pages.length;
-
+  let nbPages = $derived(directory?.collectionInfo.pages.length);
   let isCurrent = $derived(directory === etebaseState.currentDirectory);
 </script>
 
 {#if isCurrent}<div class="current-marker">currently<br />viewing</div>{/if}
 <div class="inside">
+  {#if directory}
   <div class="info">
     <h3>
       {directory.meta.name}
@@ -23,6 +23,9 @@
       ? "No pages"
       : nbPages + " " + (nbPages === 1 ? "page" : "pages")}
   </div>
+  {:else}
+  Loading..
+  {/if}
 </div>
 
 <style>

@@ -61,8 +61,8 @@ export class Group extends EBBackedItem {
 }
 
 export class Directory {
-  pages: Map<PageID, Page> = new Map();
-  populated: boolean = false;
+  pages: SvelteMap<PageID, Page> = new SvelteMap();
+  populated: boolean = $state(false);
 
   collection: Etebase.Collection;
   collectionInfo: Protobuf.CollectionInfo;
