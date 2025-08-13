@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Page } from "../lib/eb";
+  import { Page } from "../lib/eb.svelte";
   import { pushToast } from "../nav";
 
   let { page }: { page: Page } = $props();

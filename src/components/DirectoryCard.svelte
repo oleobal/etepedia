@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Directory } from "../lib/eb";
+  import { Directory } from "../lib/eb.svelte";
   import { etebaseState } from "../state.svelte";
   import { push } from "svelte-spa-router";
   import DirectoryCardInside from "./DirectoryCardInside.svelte";

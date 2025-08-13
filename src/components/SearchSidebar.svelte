@@ -1,6 +1,6 @@
 <script lang="ts">
   import { etebaseState } from "../state.svelte";
-  import { Page } from "../lib/eb";
+  import { Page } from "../lib/eb.svelte";
   import PageCard from "./PageCard.svelte";
 
   let { sidebarOpen = $bindable() }: { sidebarOpen: boolean } = $props();

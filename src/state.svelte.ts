@@ -1,6 +1,6 @@
 import { Writable } from "svelte/store";
 import * as Etebase from "etebase";
-import { Directory, DirectoryID, PageID, Page } from "./lib/eb";
+import { Directory, DirectoryID, PageID, Page } from "./lib/eb.svelte";
 import { persisted } from "svelte-persisted-store";
 import { UserSettings } from "./lib/settings";
 import { SvelteMap } from "svelte/reactivity";

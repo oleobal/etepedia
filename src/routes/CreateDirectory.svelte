@@ -1,6 +1,6 @@
 <script lang="ts">
   import { etebaseState, userSettings } from "../state.svelte";
-  import { listDirectories, Directory } from "../lib/eb";
+  import { listDirectories, Directory } from "../lib/eb.svelte";
   import { replace } from "svelte-spa-router";
 
   let name: string = $state();

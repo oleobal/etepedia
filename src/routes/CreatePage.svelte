@@ -1,6 +1,6 @@
 <script lang="ts">
   import { etebaseState } from "../state.svelte";
-  import { Page } from "../lib/eb";
+  import { Page } from "../lib/eb.svelte";
   import { push } from "svelte-spa-router";
   import { parse } from "marked";
   import DOMPurify from "dompurify";

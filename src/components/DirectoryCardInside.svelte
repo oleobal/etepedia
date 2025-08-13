@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Directory } from "../lib/eb";
+  import { Directory } from "../lib/eb.svelte";
   import { etebaseState } from "../state.svelte";
   let { directory }: { directory: Directory } = $props();
 

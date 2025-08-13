@@ -5,7 +5,7 @@ import {
   userSettings,
 } from "./state.svelte";
 import { get } from "svelte/store";
-import { indexPages, listDirectories } from "./lib/eb";
+import { indexPages, listDirectories } from "./lib/eb.svelte";
 import * as Etebase from "etebase";
 import { UserSettings } from "./lib/settings";
 import { toast } from "@zerodevx/svelte-toast";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { etebaseState, userSettings } from "../state.svelte";
-  import { Page } from "../lib/eb";
+  import { Page } from "../lib/eb.svelte";
   import { parse } from "marked";
   import DOMPurify from "dompurify";
   import { pushToast, pushSuccessToast, pushErrorToast } from "../nav";

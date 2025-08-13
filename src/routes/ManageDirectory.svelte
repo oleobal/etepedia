@@ -1,6 +1,6 @@
 <script lang="ts">
   import { etebaseState } from "../state.svelte";
-  import { Directory } from "../lib/eb";
+  import { Directory } from "../lib/eb.svelte";
   import { pushErrorToast, pushSuccessToast } from "../nav";
 
   let { uid }: { uid: string } = $props();
